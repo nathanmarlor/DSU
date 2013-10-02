@@ -1,0 +1,26 @@
+﻿sr
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dealstealunreal.com", "src\dealstealunreal.com\dealstealunreal.com.csproj", "{BAE3F99C-F183-430A-A40D-4EBBF66F8DCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dealstealunreal.com.Tests", "src\dealstealunreal.com.Tests\dealstealunreal.com.Tests.csproj", "{02C828A7-7789-424B-8ECC-0A8562B6C8AE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAE3F99C-F183-430A-A40D-4EBBF66F8DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE3F99C-F183-430A-A40D-4EBBF66F8DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE3F99C-F183-430A-A40D-4EBBF66F8DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE3F99C-F183-430A-A40D-4EBBF66F8DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02C828A7-7789-424B-8ECC-0A8562B6C8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02C828A7-7789-424B-8ECC-0A8562B6C8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02C828A7-7789-424B-8ECC-0A8562B6C8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02C828A7-7789-424B-8ECC-0A8562B6C8AE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

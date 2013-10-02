@@ -1,0 +1,519 @@
+/* CSS Document */
+
+@font-face {
+	font-family: 'Decker';
+	src: url('Decker.ttf');
+	
+
+}
+#post-356 .post-title {
+	display: none;
+}
+.black_overlay {
+	display: none;
+	position: fixed;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	z-index: 1001;
+	-moz-opacity: 0.8;
+	opacity: .80;
+	filter: alpha(opacity=80);
+}
+.white_content {
+	display: none;
+	position: fixed;
+	top: 5%;
+	left: 27%;
+	width: 500px;
+	height: 490px;
+	color: #000000;
+	padding: 16px;
+	/*border: 5px solid #6283c8;*/
+	border: 3px solid #000000;
+	border-radius: 5px;
+	background-color: white;
+	z-index: 9999;
+	/*font-family:'Decker';*/
+	font-family: 'Decker';
+	font-size: 20px;
+	color: #424242;
+
+}
+#light a {
+	color: #425f9b;
+	text-decoration: none;
+}
+#light a:hover {
+	color: #000;
+	text-decoration: underline;
+}
+.loginBox {
+	padding: 16px 0px;
+}
+.Btn {
+	/*background-color:#425f9b;*/
+	background-color: #424242;
+	color: #fff;
+	font-size: 18px;
+	border-radius: 5px;
+	font-family: "Decker", Times, serif;
+	-o-border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 2px 20px;
+	width: 115px;
+}
+.asterisk {
+	color: Red;
+	font-weight: normal;
+}
+.error1 {
+	color: Red;
+	font-size: 15px;
+	font-family: "Decker", Times, serif;
+}
+.inputstyle {
+	width: 320px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+}
+/* deal css */
+
+.deals-steal {
+	background: url("../images/left-dot.png")repeat-x scroll left bottom transparent;
+	overflow: hidden;
+	padding: 50px 0 0;
+	width: 100%;
+}
+.deal-title {
+	text-align:justify;
+  color:#333333;
+  font-size:19px;
+  font-weight:normal;
+  line-height:12px;
+  margin:-15px 0 0;
+  padding:0;
+}
+}
+.post-meta {
+	background: url("../images/left-dot.png") repeat-x scroll left bottom transparent;
+	color: #8C8C8C;
+	font-size: 14px!important;
+	margin: 15px 0 0;
+	padding: 0;
+}
+.post-title {
+	background: none!important;
+}
+.deal-title a {
+	color: #333333;
+	font-size: 22px;
+	font-weight: normal;
+        font-family: "Decker";
+	line-height: 24px;
+	margin: -22px 0 0;
+	text-decoration: none!important;
+	padding: 0;
+}
+.deal-title a:hover {
+	color: #003D66!important;
+}
+.maintitebar {
+	width: 630px;
+	float: left;
+	margin-top: 25px;
+	font-family: decker;
+	font-size: 20px
+}
+.blocks {
+	/*	margin: 0;
+	padding: 0;
+	float: left;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	width: 33.1%;
+	border-right:none;*/
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border-color: #CCCCCC -moz-use-text-color #CCCCCC #CCCCCC;
+	float: left;
+	margin: 0px 0 0;
+	padding: 0;
+	width: 33.3%;
+}
+.blocks span {
+	/*display: inline-block;
+	margin: 0;
+	padding: 0;
+	float: left;
+	    width: 3.33%;
+	border-radius: 5px;
+	box-shadow: inset 0 0 -1px 1px #333;*/
+	
+	box-shadow: inset 0 0 -1px 1px #fff;
+	display: block;
+	float: inherit;
+	
+	min-height: 15px;
+	padding: 0;
+	width: 5%;
+}
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+span.red {
+	background: #000082;
+}
+span.green {
+	background: #000068;
+}
+span.blue {
+	background: #000035;
+}
+.deal_description {
+	float: left;
+	width: 35%;
+	min-height: 120px;
+	font-family: decker;	
+	font-size: 14px;
+	
+}
+.mygridcontainer {
+	margin-top: -45px;
+	width: 623px;
+	padding: 0;
+	border: 2px solid #000;
+	float: left;
+	border-radius: 0px;
+	min-height: 15px;
+}
+
+.deal_img {
+	float:right;
+  margin-right:0px;
+  margin-top:-10px;
+  margin-bottom: 10px;
+  min-height:120px;
+  width:50%;
+}
+.deal_bt {
+  float:left;
+  margin-left:540px;
+  margin-top:-44px;
+  position:absolute;
+  width:114px;
+	
+}
+.pos_deal {
+	float:left;
+        width:auto;
+}
+.neg_deal {
+	float:left;
+	width:0%;
+
+}
+.deal_bar {
+	float: left;
+	width: 207px;
+	text-align: center;
+	color: #000000;
+}
+.steal_bar {
+	float: left;
+	width: 207px;
+	text-align: center;
+	color: #000000;
+}
+.unreal_bar {
+	float: left;
+	width: 207px;
+	text-align: center;
+	color: #000000;
+}
+.deal_profile {
+	float: right;
+	width: 50%;
+}
+
+/*My deal */
+.deal_status {
+	position:relative;
+	margin-top: -43px;
+	margin-left: 500px;
+	width: 86px;
+}
+.deacive {
+	background-color: #003D66!important;
+	color: #fff!important;
+	background: url("../images/dealDeactive.png") no-repeat !important;
+	height:36px;
+	width: 86px;
+	border:0;
+	color: transparent !important;
+}
+.acive {
+	background-color: #003D66!important;
+	color: #fff!important;
+	background: url("../images/dealActive.png") no-repeat !important;
+	height: 36px;
+	width: 86px;
+	color: transparent !important;
+	border:0;
+}
+
+.newdelete {
+	background-color: #003D66!important;
+	color: #fff!important;
+	background: url("../images/dealDelete.png") no-repeat !important;
+	height: 25px;
+	width: 25px;
+	color: transparent !important;
+	border:0;
+}
+
+.post-meta {
+	background: url("../images/left-dot.png") repeat-x scroll left bottom transparent;
+	color: #8C8C8C;
+	margin: -18px 0 0;
+	padding: 0 0 0px;
+	font-size:10px;
+}
+.my-deals {
+	background: url("../images/left-dot.png") repeat-x scroll left bottom transparent;
+	overflow: hidden;
+	padding: 0 0 0;
+	width: 100%;
+}
+.mydeal-title a {
+	color: #333333!important;
+	font-size: 16px;
+	font-weight: normal;
+	font-family: Decker;
+	line-height: 18px;
+	margin: 0;
+	padding: 0;
+	text-decoration: none!important;
+}
+.mydeal-title a:hover {
+	color: #003D66!important;
+}
+.mydeal_description {
+	float: left;
+	font-family:decker;
+	font-weight: normal;
+	text-align:justify;
+       width: 40%;
+       max-height:150px;
+       overflow:scroll;
+	overflow-x:hidden;
+       font-size:14px;
+       padding: 5px;
+	border:ridge 1px;
+}
+.deal_raking {
+	float:right;
+  font-family:decker;
+  font-size:18px;
+	height:18px;
+  width:100%;
+}
+.mydeal_img {
+	float: right;
+	height: 100%;
+	width: 30%
+}
+.my_deal {
+	float: left;
+	width: 21%;
+	position: relative;
+	top: 177px;
+	font-size: 30px;
+	margin-bottom: 10px;
+	font-family: decker;
+	font-weight: normal;
+/*	background: url("../images/left-dot.png") repeat-x scroll left bottom transparent; */
+}
+.d_username {
+	float: left;
+	font-size: 25px;
+	font-weight: normal;
+	font-family: Decker;
+	width: 99%;
+	text-align: right;
+	margin-top: 1px;
+}
+.pro_img {
+	float: right;
+	margin-top: 15px;
+	border-radius:0;
+}
+.deal_posted {
+	float: left;
+	font-size: 18px;
+	margin-top: 8px;
+	font-weight: normal;
+	font-family:decker;
+	width: 100%;
+	text-align: right;
+}
+.points {
+	float: left;
+	font-size: 18px;
+	font-weight: normal;
+	font-family:decker;
+	width: 100%;
+	text-align: right;
+	margin-top: 3px
+}
+.deal_delete{float: right;
+margin-top:-205px;
+margin-left:165px
+}
+
+ 
+ @media only screen and (max-width:768px) {
+ 
+ .d_username {
+	float: left;
+	font-size: 22px;
+	font-weight: normal;
+	width: 100%;
+	text-align: right;
+}
+.my_deal {
+	width: 100% !important;
+	top: 66px;
+}
+.deal_posted {
+	float: left;
+	font-size: 20px;
+	margin-top: 8px;
+	font-weight: normal;
+	width: 100%;
+	text-align: right;
+}
+.points {
+	float: left;
+	font-size: 22px;
+	font-weight: normal;
+	width: 100%;
+	text-align: right;
+
+}
+.deal_delete {
+	width: 20%;
+	
+}
+.mydeal_description {
+	width: 100%;
+	float: none;
+}
+.mydeal_img {
+	height: 377px;
+	width: 100%
+}
+.mygridcontainer {
+	width: 98%;
+}
+.maintitebar {
+	width: 100%;
+	float: left;
+}
+.blocks {
+	width: 33.299%!important;
+}
+.blocks span {
+	width: 5%;
+}
+}
+ @media only screen and (max-width:568px) {
+ 
+.mygridcontainer {
+	width: 98%;
+}
+.maintitebar {
+	width: 100%;
+	float: left;
+}
+.blocks {
+	width: 32.299%;
+}
+}
+ @media only screen and (min-width:360px) and (max-width:360px) {
+.deal_profile {
+	float: right;
+	width: 100%;
+}
+.blocks span {
+	width: 5%;
+}
+}
+ @media only screen and (min-width:320px) and (max-width:360px) {
+ 
+  .d_username {
+	float: left;
+	font-size: 22px;
+	font-weight: bold;
+	width: 100%;
+	text-align: right;
+}
+.my_deal {
+	width: 100% !important;
+	top: 66px;
+}
+.deal_posted {
+	float: left;
+	font-size: 20px;
+	margin-top: 8px;
+	font-weight: bold;
+	width: 99%;
+	text-align: right;
+}
+.points {
+	float: left;
+	font-size: 22px;
+	font-weight: bold;
+	width: 99%;
+	text-align: right;
+}
+.deal_description {
+	float: none;
+	width: 100%;
+	min-height: 180px;
+}
+.deal_img {
+	height: 277px;
+	width: 100%
+}
+.blocks span {
+	width: 5%;
+}
+.deal_profile {
+	float: right;
+	width: 100%;
+}
+.blocks {
+	width: 32.999%!important;
+}
+}
+
+#newmydeals {
+clear: both !important;
+top: 0px !important;
+
+}
+
+#frontpostmeta {
+ background:none;
+ font-family:decker; 
+}
+
+.mydealborder {
+
+background:url('http://www.dealstealunreal.com/wp-content/themes/trulyminimal/images/left-dot.png') top left repeat-x !important;
+margin: 0px 0 20px 0;
+}

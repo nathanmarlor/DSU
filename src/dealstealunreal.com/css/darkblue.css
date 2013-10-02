@@ -1,0 +1,374 @@
+/*------------------------------------------------
+*  Header
+*-----------------------------------------------*/
+#header ul li a:hover,
+#header ul li.current-menu-item a,
+#header ul li.current_page_item a {
+	color: #1e598e;
+}
+
+/*------------------------------------------------
+*  Blog
+*-----------------------------------------------*/
+.blog .hentry h2.post-title a:hover {
+	color: #1e598e;
+}
+
+.blog .hentry .post-meta .post-author a:hover {
+	color: #1e598e;
+}
+
+.blog .hentry .post-meta .post-comments a {
+	color: #1e598e;
+}
+
+.blog .hentry .post-meta .post-comments a:hover {
+	color: #ff9600;
+}
+
+.blog .hentry .post-content a {
+	color: #1e598e;
+}
+
+.blog .hentry .post-content a:hover {
+	color: #ff9600;
+}
+
+.blog .hentry a.more-link {
+	color: #1e598e;
+}
+
+.blog .hentry a.more-link:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Search
+*-----------------------------------------------*/
+.search .hentry h2.post-title a:hover {
+	color: #1e598e;
+}
+
+.search .hentry .post-meta .post-author a:hover {
+	color: #1e598e;
+}
+
+.search .hentry .post-meta .post-comments a {
+	color: #1e598e;
+}
+
+.search .hentry .post-meta .post-comments a:hover {
+	color: #ff9600;
+}
+
+.search .hentry .post-content a {
+	color: #1e598e;
+}
+
+.search .hentry .post-content a:hover {
+	color: #ff9600;
+}
+
+.search .hentry a.more-link {
+	color: #1e598e;
+}
+
+.search .hentry a.more-link:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Archive
+*-----------------------------------------------*/
+h2.archive-title span {
+	color: #1e598e;
+}
+
+.archive .hentry h2.post-title a:hover {
+	color: #1e598e;
+}
+
+.archive .hentry .post-meta .post-author a:hover {
+	color: #1e598e;
+}
+
+.archive .hentry .post-meta .post-comments a {
+	color: #1e598e;
+}
+
+.archive .hentry .post-meta .post-comments a:hover {
+	color: #ff9600;
+}
+
+.archive .hentry .post-content a {
+	color: #1e598e;
+}
+
+.archive .hentry .post-content a:hover {
+	color: #ff9600;
+}
+
+.archive .hentry a.more-link {
+	color: #1e598e;
+}
+
+.archive .hentry a.more-link:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Page
+*-----------------------------------------------*/
+.page .hentry .post-content a {
+	color: #1e598e;
+}
+
+.page .hentry .post-content a:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Single
+*-----------------------------------------------*/
+.single .hentry .post-meta .post-author a:hover {
+	color: #1e598e;
+}
+
+.single .hentry .post-meta .post-comments a {
+	color: #1e598e;
+}
+
+.single .hentry .post-meta .post-comments a:hover {
+	color: #ff9600;
+}
+
+.single .hentry .post-taxonomies .post-categories a:hover {
+	color: #ff9600;
+}
+
+.single .hentry .post-taxonomies .post-tags a:hover {
+	color: #ff9600;
+}
+
+.single .hentry .post-content a {
+	color: #1e598e;
+}
+
+.single .hentry .post-content a:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Error 404
+*-----------------------------------------------*/
+.error404 .hentry .post-content a {
+	color: #1e598e;
+}
+
+.error404 .hentry .post-content a:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Single Sections
+*-----------------------------------------------*/
+/*----  About the Author Section  ----*/
+.section-about-the-author .author-content .author-name {
+	color: #1e598e;
+}
+
+.section-about-the-author .author-content .author-name a {
+	color: #1e598e;
+}
+
+.section-about-the-author .author-content .author-name a:hover {
+	color: #ff9600;
+}
+
+.section-about-the-author .author-content p a {
+	color: #1e598e;
+}
+
+.section-about-the-author .author-content p a:hover {
+	color: #ff9600;
+}
+
+.section-about-the-author .author-content .author-posts {
+	color: #1e598e;
+}
+
+.section-about-the-author .author-content .author-posts a {
+	color: #1e598e;
+}
+
+.section-about-the-author .author-content .author-posts a:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  HTML Form elements
+*-----------------------------------------------*/
+.hentry input[type=submit] {
+	color: #1e598e;
+}
+
+.hentry input[type=submit]:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Commments Section
+*-----------------------------------------------*/
+#comments .comments-top .comment-reply-link {
+	color: #1e598e;
+}
+
+#comments .comments-top .comment-reply-link:hover {
+	color: #ff9600;
+}
+
+#comments .comments-box a {
+	color: #1e598e;
+}
+
+#comments ul.commentlist li.comment .comment-main .comment-meta .comment-author {
+	color: #1e598e;
+}
+
+#comments ul.commentlist li.comment .comment-main .comment-meta .comment-author a {
+	color: #1e598e;
+}
+
+#comments ul.commentlist li.comment .comment-main .comment-meta .comment-author a:hover {
+	color: #ff9600;
+}
+
+#comments ul.commentlist li.comment .comment-main .comment-content a {
+	color: #1e598e;
+}
+
+#comments ul.commentlist li.comment .comment-main .comment-content a:hover {
+	color: #ff9600;
+}
+
+#comments ul.commentlist li.comment .comment-main a.comment-reply-link {
+	color: #1e598e;
+}
+
+#comments ul.commentlist li.comment .comment-main a.comment-reply-link:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Comment Form
+*-----------------------------------------------*/
+#respond #reply-title a#cancel-comment-reply-link {
+	color: #1e598e;
+}
+
+#respond #reply-title a#cancel-comment-reply-link:hover {
+	color: #ff9600;
+}
+
+#respond .logged-in-as a {
+	color: #1e598e;
+}
+
+#respond .logged-in-as a:hover {
+	color: #ff9600;
+}
+
+#respond input[type="submit"] {
+	color: #1e598e;
+}
+
+#respond input[type="submit"]:hover {
+	color: #ff9600;
+}
+
+/*------------------------------------------------
+*  Pagination
+*-----------------------------------------------*/
+.pagination a:hover {
+	color: #1e598e;
+}
+
+/*------------------------------------------------
+*  Sidebar
+*-----------------------------------------------*/
+#sidebar a {
+	color: #1e598e;
+}
+
+#sidebar ul {
+	color: #1e598e;
+}
+
+#sidebar ul li a:hover {
+	color: #1e598e;
+}
+
+/*---------------------------------
+*  Text Widget
+*--------------------------------*/
+#sidebar .widget-container .textwidget a:hover {
+	color: #ff9600;
+}
+
+/*---------------------------------
+*  Latest Comments Widget
+*--------------------------------*/
+#sidebar .widget-container.latest-comments-widget ul li {
+	color: #1e598e;
+}
+
+/*---------------------------------
+*  Latest Posts Widget
+*--------------------------------*/
+#sidebar .widget-container.latest-posts-widget ul li {
+	color: #1e598e;
+}
+
+/*---------------------------------
+*  Random Posts Widget
+*--------------------------------*/
+#sidebar .widget-container.random-posts-widget ul li {
+	color: #1e598e;
+}
+
+/*---------------------------------
+*  Popular Posts Widget
+*--------------------------------*/
+#sidebar .widget-container.most-popular-posts-widget ul li {
+	color: #1e598e;
+}
+
+/*---------------------------------
+*  Recent Comments Widget
+*--------------------------------*/
+#sidebar .widget-container.widget_recent_comments ul li {
+	color: #1e598e;
+}
+
+#sidebar .widget-container.widget_recent_comments ul li a.url {
+	color: #1e598e;
+}
+
+/*---------------------------------
+*  Tags Widget
+*--------------------------------*/
+#sidebar .widget-container.tags-widget a:hover {
+	color: #ff9600;
+	text-decoration: underline;
+}
+
+/*------------------------------------------------
+*  Footer
+*-----------------------------------------------*/
+#footer a {
+	color: #1e598e;
+}
+
+#footer a:hover {
+	color: #ff9600;
+}
