@@ -9,7 +9,7 @@
 
         Deal GetDeal(int dealId);
 
-        Deal GetDeal(string dealName);
+        IList<Deal> SearchForDeal(string dealName);
 
         void SaveDeal(Deal deal);
 

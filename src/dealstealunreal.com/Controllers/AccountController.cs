@@ -85,7 +85,7 @@
         [HttpPost]
         public ActionResult Register(Register model, bool captchaValid)
         {
-            if (ModelState.IsValid && captchaValid)
+            if (ModelState.IsValid )//&& captchaValid)
             {
                 // Check if user already exists
 

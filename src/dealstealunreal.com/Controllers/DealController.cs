@@ -141,7 +141,9 @@
                 {
                     User user = this.GetCurrentUser();
 
-                    if (user.UserName != dealDataAccess.GetDeal(dealId).UserName)
+                    Deal deal = dealDataAccess.GetDeal(dealId);
+
+                    if (user.UserName != deal.UserName)
                     {
                         voteDataAccess.AddVote(dealId, user.UserName, DateTime.Now, vote);
                     }
@@ -150,11 +152,11 @@
                         // TODO: log attempt!
                     }
 
-                    // TODO: Add points to user
+                    memberDataAccess.AddPoint(deal.UserName);
                 }
                 catch (DealDatabaseException)
                 {
-                    ModelState.AddModelError("System", "An error occurred when saving your vote - please try again later");
+                    // TODO: log error
                 }
             }
 
@@ -351,24 +353,20 @@
                 RedirectToAction("Index", "Home");
             }
 
-            ViewData.Add("Term", term);
-
             IList<Deal> deals = new List<Deal>();
 
             try
             {
-                deals = dealDataAccess.GetAllDeals();
+                deals = dealDataAccess.SearchForDeal(term);
             }
             catch (DealDatabaseException)
             {
                 // TODO: log db is down
             }
 
-            IList<Deal> matching = deals.Where(a => a.Title.Equals(term)).ToList();
-
             User user = GetCurrentUser();
 
-            return View(new DealList() { Deals = matching, CurrentUsername = user == null ? string.Empty : user.UserName });
+            return View(new DealList() { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
         }
 
         private User GetCurrentUser()

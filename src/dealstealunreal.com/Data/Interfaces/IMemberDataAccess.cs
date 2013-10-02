@@ -7,6 +7,8 @@ namespace dealstealunreal.com.Data.Interfaces
     {
         User GetUser(string userId);
 
+        void AddPoint(string userId);
+
         void CreateUser(Register details);
 
         void ChangePassword(string userId, string password);

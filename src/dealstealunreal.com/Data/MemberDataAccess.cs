@@ -1,6 +1,4 @@
-﻿using dealstealunreal.com.Exceptions;
-
-namespace dealstealunreal.com.Data
+﻿namespace dealstealunreal.com.Data
 {
     using System;
     using System.Configuration;
@@ -8,6 +6,7 @@ namespace dealstealunreal.com.Data
     using Interfaces;
     using Models;
     using Models.User;
+    using Exceptions;
 
     public class MemberDataAccess : IMemberDataAccess
     {
@@ -15,6 +14,7 @@ namespace dealstealunreal.com.Data
         private const string SaveUserQuery = "insert into Users (Username, Password, Email, ProfilePicture, Points) values(@userName, @password, @email, @profilePicture, @points)";
         private const string ChangePasswordQuery = "update Users set Password = @password where Username = @userName";
         private const string UpdateUserQuery = "update Users set Email = @email, ProfilePicture = @profilePicture where Username = @userName";
+        private const string AddPointsQuery = "update DealStealUnreal.dbo.Users set Points = Points + @pointValue where DealStealUnreal.dbo.Users.Username =  (select Username from DealStealUnreal.dbo.Deals where DealId = 1)";
 
         public User GetUser(string userId)
         {
@@ -62,6 +62,40 @@ namespace dealstealunreal.com.Data
             }
 
             throw new MemberDatabaseException(string.Format("The user {0} could not be found", userId));
+        }
+
+        public void AddPoint(string userId)
+        {
+            int pointValue = int.Parse(ConfigurationManager.AppSettings["PointPerVote"]);
+
+            string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = AddPointsQuery;
+
+                        command.Parameters.AddWithValue("@pointValue", pointValue);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                // TODO: Log this error 
+                throw new MemberDatabaseException(string.Format("Received Sql Exception when adding user point {0} - {1}", userId, e.Message));
+            }
+            catch (Exception e)
+            {
+                // TODO: log this error
+                throw new MemberDatabaseException(string.Format("Received general Exception when retrieving user {0} - {1}", userId, e.Message));
+            }
         }
 
         public void CreateUser(Register details)
