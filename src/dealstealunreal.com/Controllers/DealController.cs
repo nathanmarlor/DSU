@@ -202,7 +202,7 @@
 
             DealComments dealComments = new DealComments()
                 {
-                    Comments = userComments,
+                    Comments = userComments.OrderByDescending(a => a.Value.Date),
                     Deal = deal,
                     CurrentUsername = user == null ? string.Empty : user.UserName
                 };

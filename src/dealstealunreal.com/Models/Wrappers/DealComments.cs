@@ -1,14 +1,14 @@
 ﻿namespace dealstealunreal.com.Models.Wrappers
 {
     using System.Collections.Generic;
-
-    using dealstealunreal.com.Models.Deals;
+    using System.Linq;
+    using Deals;
 
     public class DealComments
     {
         public Deal Deal { get; set; }
 
-        public IDictionary<User.User, Comment> Comments { get; set; }
+        public IOrderedEnumerable<KeyValuePair<User.User, Comment>> Comments { get; set; }
 
         public string CurrentUsername { get; set; }
 
