@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/ViewMasterPageLayout.Master"
     Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Wrappers.UserDeals>" %>
-<%@ Import Namespace="dealstealunreal.com.Controllers" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     MY PROFILE | DEAL.STEAL.UNREAL.

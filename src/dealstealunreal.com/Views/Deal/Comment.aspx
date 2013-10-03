@@ -15,7 +15,7 @@
                                     <div style="position: relative;">
                                         <img width="30" height="30" class="avatar avatar-30 photo" src="<%:comment.Key.ProfilePicture %>"
                                             alt="">
-                                            <%:Html.GravatarImage(comment.Key.Email, new Dictionary<string, string> {{"width","30"},{"height","30"},{"class","avatar avatar-30 photo"}},30,GravatarHtmlHelper.DefaultImage.Default,comment.Key.ProfilePicture)%>
+                                            <%:Html.GravatarImage(comment.Key.Email, new Dictionary<string, string> { { "width", "30" }, { "height", "30" }, { "class", "avatar avatar-30 photo" } }, 30, GravatarHtmlHelper.DefaultImage.Default, Request.Url.Authority + Url.Content(comment.Key.ProfilePicture))%>
                                         <span class="comment-avatar-overlay"></span>
                                     </div>
                                 </td>
