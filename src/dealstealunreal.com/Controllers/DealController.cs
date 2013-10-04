@@ -6,6 +6,9 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Data.Interfaces;
+
+    using dealstealunreal.com.Infrastructure.Processing.Interfaces;
+
     using Exceptions;
     using Infrastructure.Sessions.Interfaces;
     using Models;
@@ -20,14 +23,16 @@
         private readonly IMemberDataAccess memberDataAccess;
         private readonly ICommentDataAccess commentDataAccess;
         private readonly IVoteDataAccess voteDataAccess;
+        private readonly IVoteProcessor voteProcessor;
 
-        public DealController(IDealDataAccess dealDataAccess, ISessionController sessionController, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess)
+        public DealController(IDealDataAccess dealDataAccess, ISessionController sessionController, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor)
         {
             this.dealDataAccess = dealDataAccess;
             this.sessionController = sessionController;
             this.memberDataAccess = memberDataAccess;
             this.commentDataAccess = commentDataAccess;
             this.voteDataAccess = voteDataAccess;
+            this.voteProcessor = voteProcessor;
         }
 
         public ActionResult Index()
@@ -89,7 +94,8 @@
 
                 foreach (Deal deal in deals)
                 {
-                    deal.Votes = voteDataAccess.GetVotes(deal.DealID);
+                    int votes = voteDataAccess.GetVotes(deal.DealID);
+                    deal.Votes = voteProcessor.CalculateVote(votes);
                     deal.CanVote = voteDataAccess.CanVote(deal.DealID, user == null ? string.Empty : user.UserName);
                 }
             }

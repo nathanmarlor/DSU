@@ -5,6 +5,7 @@
     using dealstealunreal.com.Data.Interfaces;
     using dealstealunreal.com.Infrastructure.Communication;
     using dealstealunreal.com.Infrastructure.Communication.Interfaces;
+    using dealstealunreal.com.Infrastructure.Processing;
     using dealstealunreal.com.Infrastructure.Processing.Interfaces;
     using dealstealunreal.com.Infrastructure.Security;
     using dealstealunreal.com.Infrastructure.Security.Interfaces;
@@ -23,7 +24,7 @@
                 .To<FacebookAuthenticate>();
 
             Bind<IVoteProcessor>()
-                .To<IVoteProcessor>();
+                .To<VoteProcessor>();
 
             Bind<IMemberDataAccess>()
                 .To<MemberDataAccess>()

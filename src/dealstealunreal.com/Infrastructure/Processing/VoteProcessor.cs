@@ -1,8 +1,8 @@
-﻿using dealstealunreal.com.Models.Deals;
-
+﻿
 namespace dealstealunreal.com.Infrastructure.Processing
 {
     using System.Configuration;
+
     using Data.Interfaces;
     using Interfaces;
 
@@ -15,32 +15,33 @@ namespace dealstealunreal.com.Infrastructure.Processing
             this.dealDataAccess = dealDataAccess;
         }
 
-        public int CalculateVote(int dealId)
+        public int CalculateVote(int votes)
         {
             double dealLimit = double.Parse(ConfigurationManager.AppSettings["Deal"]);
             double stealLimit = double.Parse(ConfigurationManager.AppSettings["Steal"]);
             double unrealLimit = double.Parse(ConfigurationManager.AppSettings["Unreal"]);
 
-            Deal deal = dealDataAccess.GetDeal(dealId);
-
-            int numOfVotes = 0;
-
-            if (deal.Votes > 0 && deal.Votes <= dealLimit)
+            if (votes <= 0)
             {
-                numOfVotes = (int)(deal.Votes * dealLimit);
+                return 0;
             }
 
-            if (deal.Votes > dealLimit && deal.Votes <= stealLimit)
+            if (votes > 0 && votes <= dealLimit)
             {
-                numOfVotes = (int)((deal.Votes - (dealLimit + stealLimit)) / unrealLimit);
+                return (int)((votes / dealLimit) * (100 / 3));
             }
 
-            if (deal.Votes > stealLimit)
+            if (votes > dealLimit && votes <= stealLimit)
             {
-                numOfVotes = (int)((deal.Votes - dealLimit) / stealLimit);
+                return (int)(((votes - dealLimit) / (stealLimit - dealLimit)) * (100 / 3)) + (100 / 3);
             }
 
-            return numOfVotes;
+            if (votes > stealLimit && votes <= unrealLimit)
+            {
+                return (int)(((votes - stealLimit) / (unrealLimit - stealLimit)) * (100 / 3)) + (200 / 3);
+            }
+
+            return 100;
         }
     }
 }
