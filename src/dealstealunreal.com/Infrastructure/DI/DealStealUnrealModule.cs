@@ -37,7 +37,7 @@
             Bind<ISessionController>()
                 .To<SessionController>()
                 .InSingletonScope()
-                .WithConstructorArgument("timeout", TimeSpan.FromMinutes(10));
+                .WithConstructorArgument("timeout", TimeSpan.FromMinutes(15));
 
             Bind<IRecoverPassword>()
                 .To<RecoverPassword>();

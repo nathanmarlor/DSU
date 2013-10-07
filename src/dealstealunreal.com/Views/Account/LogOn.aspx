@@ -35,7 +35,7 @@
 				    </p><!-- .form-password -->			<p class="login-form-submit">
 								    <input name="submit" class="submit button" value="LOG IN" type="submit">
 				
-						    <%: Html.CheckBoxFor(m => m.RememberMe, new { Class="remember-me checkbox", Checked="checked"})%>
+						    <%: Html.CheckBoxFor(m => m.RememberMe, new { Class="remember-me checkbox", Checked="true"})%>
                             <%: Html.LabelFor(m => m.RememberMe) %>
 
 				    <input name="action" value="log-in" type="hidden">

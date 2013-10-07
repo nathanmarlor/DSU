@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web.Mvc;
     using System.Web.Security;
     using Data.Interfaces;
@@ -125,6 +126,8 @@
             {
                 deal.UserName = this.GetCurrentUser().UserName;
 
+                deal.ImageUrl = this.UrlExists(deal.ImageUrl) ? deal.ImageUrl : Request.Url.Authority + Url.Content("~/images/deal.png");
+
                 try
                 {
                     dealDataAccess.SaveDeal(deal);
@@ -136,6 +139,31 @@
             }
 
             return this.View(deal);
+        }
+
+        private bool UrlExists(string url)
+        {
+            HttpWebResponse response = null;
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "HEAD";
+
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                // TODO: Log that the image didn't exist
+                return false;
+            }
+            finally
+            {
+                if (response != null)
+                {
+                    response.Close();
+                }
+            }
         }
 
         [HttpPost]

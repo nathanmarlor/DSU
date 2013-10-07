@@ -56,7 +56,8 @@ namespace dealstealunreal.com.Infrastructure.Sessions
                                   {
                                       SessionId = Guid.NewGuid(),
                                       Username = user.UserName,
-                                      LastUpdated = DateTime.Now
+                                      LastUpdated = DateTime.Now,
+                                      RememberMe = rememberMe
                                   };
 
             HttpContext.Current.Session["sessionId"] = session.SessionId;
@@ -111,6 +112,8 @@ namespace dealstealunreal.com.Infrastructure.Sessions
 
                 sessions[sessionId].LastUpdated = DateTime.Now;
 
+                FormsAuthentication.SetAuthCookie(sessions[sessionId].Username, sessions[sessionId].RememberMe);
+
                 return sessions[sessionId];
             }
             finally
@@ -135,7 +138,7 @@ namespace dealstealunreal.com.Infrastructure.Sessions
                     {
                         TimeSpan duration = DateTime.Now - session.Value.LastUpdated;
 
-                        if (duration > timeout)
+                        if (duration > timeout && !session.Value.RememberMe)
                         {
                             sessions.Remove(session.Key);
 

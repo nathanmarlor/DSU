@@ -10,5 +10,7 @@
         public string Username { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public bool RememberMe { get; set; }
     }
 }

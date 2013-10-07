@@ -10,7 +10,7 @@
 
     public class SessionDataAccess : ISessionDataAccess
     {
-        private const string SaveSessionQuery = "insert into Sessions (SessionId, LastUpdatedTime, Username) values (@sessionId, @lastUpdatedTime, @username)";
+        private const string SaveSessionQuery = "insert into Sessions (SessionId, LastUpdatedTime, Username, RememberMe) values (@sessionId, @lastUpdatedTime, @username, @rememberMe)";
         private const string DeleteSessionQuery = "delete from Sessions where SessionId = @sessionId";
         private const string UpdateSessionTimeQuery = "update Sessions set LastUpdatedTime = @lastUpdatedTime where SessionId = @sessionId";
         private const string GetAllSessionsQuery = "select * from Sessions";
@@ -31,6 +31,7 @@
                         command.Parameters.AddWithValue("@sessionId", session.SessionId);
                         command.Parameters.AddWithValue("@lastUpdatedTime", session.LastUpdated);
                         command.Parameters.AddWithValue("@username", session.Username);
+                        command.Parameters.AddWithValue("@rememberMe", session.RememberMe);
 
                         command.ExecuteNonQuery();
                     }
@@ -135,7 +136,8 @@
                                     {
                                         SessionId = Guid.Parse(reader.GetString(reader.GetOrdinal("SessionId"))),
                                         LastUpdated = reader.GetDateTime(reader.GetOrdinal("LastUpdatedTime")),
-                                        Username = reader.GetString(reader.GetOrdinal("Username"))
+                                        Username = reader.GetString(reader.GetOrdinal("Username")),
+                                        RememberMe = reader.GetBoolean(reader.GetOrdinal("RememberMe"))
                                     });
                             }
                         }
