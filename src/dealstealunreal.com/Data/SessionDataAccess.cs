@@ -10,7 +10,7 @@
 
     public class SessionDataAccess : ISessionDataAccess
     {
-        private const string SaveSessionQuery = "insert into Sessions (SessionId, LastUpdatedTime, Username, RememberMe) values (@sessionId, @lastUpdatedTime, @username, @rememberMe)";
+        private const string SaveSessionQuery = "IF EXISTS (Select * from Sessions where Username = @userName) UPDATE Sessions set SessionId = @sessionId, LastUpdatedTime = @lastUpdatedTime, RememberMe = @rememberMe where Username = @userName ELSE INSERT INTO Sessions (SessionId, Username, LastUpdatedTime, RememberMe) VALUES (@sessionId, @userName, @lastUpdatedTime, @rememberMe)";
         private const string DeleteSessionQuery = "delete from Sessions where SessionId = @sessionId";
         private const string UpdateSessionTimeQuery = "update Sessions set LastUpdatedTime = @lastUpdatedTime where SessionId = @sessionId";
         private const string GetAllSessionsQuery = "select * from Sessions";
