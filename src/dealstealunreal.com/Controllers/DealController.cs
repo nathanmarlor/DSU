@@ -120,13 +120,15 @@
         }
 
         [HttpPost]
-        public ActionResult SubmitDeal(Deal deal)
+        public void SubmitDeal(Deal deal)
         {
             if (ModelState.IsValid)
             {
                 deal.UserName = this.GetCurrentUser().UserName;
 
-                deal.ImageUrl = this.UrlExists(deal.ImageUrl) ? deal.ImageUrl : Request.Url.Authority + Url.Content("~/images/deal.png");
+                deal.ImageUrl = this.UrlExists(deal.ImageUrl)
+                                    ? deal.ImageUrl
+                                    : Request.Url.Authority + Url.Content("~/images/deal.png");
 
                 try
                 {
@@ -134,11 +136,14 @@
                 }
                 catch (DealDatabaseException)
                 {
-                    ModelState.AddModelError("System", "An error occurred when saving your deal - please try again later");
+                    ModelState.AddModelError("System", "Your deal could not be saved!");
+                    // TODO: log!
                 }
             }
 
-            return this.View(deal);
+            Response.Clear();
+            Response.StatusCode = 500;
+            Response.Write(ModelState.Values.First(a => a.Errors.Any()).Errors.First().ErrorMessage);
         }
 
         private bool UrlExists(string url)

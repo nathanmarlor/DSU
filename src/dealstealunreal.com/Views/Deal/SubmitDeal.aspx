@@ -23,6 +23,7 @@
             <tr>
                 <td colspan="3">
                     <b><u>SUBMIT DEAL</u></b>
+                    <span id="topError" style="display: none; max-width: 200px" class="error1">Error!</span>
                 </td>
             </tr>
             <tr>
@@ -31,9 +32,6 @@
                 </td>
                 <td width="217">
                     <%: Html.TextBoxFor(m => m.Title, new { Class = "inputstyle", id = "deal_title" })%>
-                </td>
-                <td width="121">
-                    <span id="dealTitleError" style="display: none;" class="error1">Required field</span>
                 </td>
             </tr>
             <tr>
@@ -48,9 +46,6 @@
                 <td width="217">
                     <%: Html.TextBoxFor(m => m.Retailer, new { Class = "inputstyle", id = "deal_retailer" })%>
                 </td>
-                <td width="121">
-                    <span id="dealRetailerError" style="display: none;" class="error1">Required field</span>
-                </td>
             </tr>
             <tr>
                 <td colspan="3">
@@ -63,9 +58,6 @@
                 </td>
                 <td width="217">
                     <%: Html.TextBoxFor(m => m.Url, new { Class = "inputstyle", id = "deal_url" })%>
-                </td>
-                <td width="121">
-                    <span id="dealUrlError" style="display: none;" class="error1">Required field</span>
                 </td>
             </tr>
             <tr>
@@ -80,10 +72,6 @@
                 <td>
                     <%: Html.TextBoxFor(m => m.Price, new { Class = "inputstyle", id = "deal_price" })%>
                 </td>
-                <td>
-                    <span id="dealPriceError" style="display: none; max-width: 65px;" class="error1">Required
-                        field</span>
-                </td>
             </tr>
             <tr>
                 <td colspan="3">
@@ -97,9 +85,6 @@
                 <td>
                     <%: Html.TextBoxFor(m => m.ImageUrl, new { Class = "inputstyle", id = "deal_image_url" })%>
                 </td>
-                <td>
-                    <span class="error1" style="display:none;" id="dealImageError">Required field</span>
-                </td>
             </tr>
             <tr>
                 <td colspan="3">
@@ -112,7 +97,6 @@
                 </td>
                 <td width="217">
                     <%: Html.TextAreaFor(m => m.Description, new { Class = "inputstyle", style = "resize: none;", id = "deal_description" })%>
-                    <span id="dealDescriptionError" style="display: none; max-width: 200px" class="error1">Max 100 words</span>
                 </td>
                 <td width="121">
                 </td>
