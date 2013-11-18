@@ -154,17 +154,22 @@
         private bool UrlExists(string url)
         {
             HttpWebResponse response = null;
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "HEAD";
 
             try
             {
-                response = (HttpWebResponse)request.GetResponse();
+                var request = (HttpWebRequest) WebRequest.Create(url);
+                request.Method = "HEAD";
+
+                response = (HttpWebResponse) request.GetResponse();
                 return true;
             }
             catch (WebException ex)
             {
                 // TODO: Log that the image didn't exist
+                return false;
+            }
+            catch (Exception ex)
+            {
                 return false;
             }
             finally
