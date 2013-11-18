@@ -125,19 +125,21 @@
                 {
                     ModelState.AddModelError("Image URL", "The image URL specified is not valid");
                 }
-
-                deal.ImageUrl = deal.ImageUrl ?? "http://" + Request.Url.Authority + Url.Content("/images/deal.png");
-
-                deal.Url = deal.Url.StartsWith("http://") ? deal.Url : "http://" + deal.Url;
-
-                try
+                else
                 {
-                    dealDataAccess.SaveDeal(deal);
-                }
-                catch (DealDatabaseException)
-                {
-                    ModelState.AddModelError("System", "Your deal could not be saved!");
-                    // TODO: log!
+                    deal.ImageUrl = deal.ImageUrl ?? "http://" + Request.Url.Authority + Url.Content("/images/deal.png");
+
+                    deal.Url = deal.Url.StartsWith("http://") ? deal.Url : "http://" + deal.Url;
+
+                    try
+                    {
+                        dealDataAccess.SaveDeal(deal);
+                    }
+                    catch (DealDatabaseException)
+                    {
+                        ModelState.AddModelError("System", "Your deal could not be saved!");
+                        // TODO: log!
+                    }
                 }
             }
 
