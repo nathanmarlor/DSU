@@ -9,8 +9,7 @@
         <h2 class="archive-title">
             <span class="results">
                 <%:Model.Deals.Count() %>
-                results</span> Search results for <span>
-                    <%:ViewData["Term"] %></span></h2>
+                results</span> Search results for <span> <%:ViewData["Term"] %></span></h2>
         <% if (!Model.Deals.Any())
            { %>
         <div class="post hentry">

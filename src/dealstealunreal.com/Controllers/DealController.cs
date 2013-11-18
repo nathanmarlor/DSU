@@ -374,6 +374,8 @@
 
         public ActionResult Search(string term)
         {
+            ViewData["Term"] = term;
+
             if (term.Equals(string.Empty))
             {
                 RedirectToAction("Index", "Home");

@@ -102,10 +102,11 @@
                     // TODO: Log success
                 }
 
-
                 // Attempt to register the user
                 try
                 {
+                    string pass = model.Password;
+
                     model.Password = hash.HashString(model.Password);
 
                     if (model.ProfilePicture != null)
@@ -130,6 +131,8 @@
                     }
 
                     memberDataAccess.CreateUser(model);
+
+                    sessionController.Logon(model.UserName, pass, false);
 
                     return PartialView("RegisterSuccess");
                 }
