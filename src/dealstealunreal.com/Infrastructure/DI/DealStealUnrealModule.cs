@@ -1,17 +1,19 @@
 ﻿namespace dealstealunreal.com.Infrastructure.DI
 {
     using System;
-    using dealstealunreal.com.Data;
-    using dealstealunreal.com.Data.Interfaces;
-    using dealstealunreal.com.Infrastructure.Communication;
-    using dealstealunreal.com.Infrastructure.Communication.Interfaces;
-    using dealstealunreal.com.Infrastructure.Processing;
-    using dealstealunreal.com.Infrastructure.Processing.Interfaces;
-    using dealstealunreal.com.Infrastructure.Security;
-    using dealstealunreal.com.Infrastructure.Security.Interfaces;
-    using dealstealunreal.com.Infrastructure.Sessions;
-    using dealstealunreal.com.Infrastructure.Sessions.Interfaces;
+    using Communication;
+    using Communication.Interfaces;
+    using Data;
+    using Data.Interfaces;
     using Ninject.Modules;
+    using Processing;
+    using Processing.Interfaces;
+    using Security;
+    using Security.Interfaces;
+    using Sessions;
+    using Sessions.Interfaces;
+    using Utilities;
+    using Utilities.Interfaces;
 
     public class DealStealUnrealModule : NinjectModule
     {
@@ -53,6 +55,13 @@
 
             Bind<IVoteDataAccess>()
                 .To<VoteDataAccess>();
+
+            Bind<IUserUtilities>()
+                .To<UserUtilities>();
+
+            //Bind<DealController>()
+            //    .ToSelf()
+            //    .WithConstructorArgument("user", Kernel.Get<IUserUtilities>().GetCurrentUser());
         }
     }
 }

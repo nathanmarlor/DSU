@@ -80,7 +80,7 @@
             </tr>
             <tr>
                 <td>
-                    Image URL:<span class="asterisk">*</span>
+                    Image URL:
                 </td>
                 <td>
                     <%: Html.TextBoxFor(m => m.ImageUrl, new { Class = "inputstyle", id = "deal_image_url" })%>

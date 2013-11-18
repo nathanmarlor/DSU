@@ -5,13 +5,10 @@
     using System.Linq;
     using System.Net;
     using System.Web.Mvc;
-    using System.Web.Security;
     using Data.Interfaces;
-
-    using dealstealunreal.com.Infrastructure.Processing.Interfaces;
-
     using Exceptions;
-    using Infrastructure.Sessions.Interfaces;
+    using Infrastructure.Processing.Interfaces;
+    using Infrastructure.Utilities.Interfaces;
     using Models;
     using Models.Deals;
     using Models.User;
@@ -20,20 +17,21 @@
     public class DealController : Controller
     {
         private readonly IDealDataAccess dealDataAccess;
-        private readonly ISessionController sessionController;
         private readonly IMemberDataAccess memberDataAccess;
         private readonly ICommentDataAccess commentDataAccess;
         private readonly IVoteDataAccess voteDataAccess;
         private readonly IVoteProcessor voteProcessor;
+        private readonly User user;
 
-        public DealController(IDealDataAccess dealDataAccess, ISessionController sessionController, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor)
+        public DealController(IDealDataAccess dealDataAccess, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor, IUserUtilities userUtils)
         {
             this.dealDataAccess = dealDataAccess;
-            this.sessionController = sessionController;
             this.memberDataAccess = memberDataAccess;
             this.commentDataAccess = commentDataAccess;
             this.voteDataAccess = voteDataAccess;
             this.voteProcessor = voteProcessor;
+
+            this.user = userUtils.GetCurrentUser();
         }
 
         public ActionResult Index()
@@ -43,8 +41,6 @@
 
         public ActionResult DealProfile(string userId = null)
         {
-            User user = GetCurrentUser();
-
             User userFromId = null;
 
             try
@@ -72,13 +68,13 @@
                 //TODO: Log that DB is down
             }
 
-            User notNullUser = userFromId ?? user;
+            User notNullUser = userFromId ?? this.user;
 
             UserDeals deal = new UserDeals()
                 {
                     User = notNullUser,
-                    Deals = userDeals.Where(a => a.UserName.Trim().ToLower().Equals(notNullUser.UserName.ToLower().Trim())).ToList(),
-                    IsCurrentUser = notNullUser.UserName.ToLower().Trim().Equals(user != null ? user.UserName.ToLower().Trim() : string.Empty)
+                    Deals = userDeals.Where(a => a.UserName.Equals(notNullUser.UserName)).ToList(),
+                    IsCurrentUser = notNullUser.UserName.Equals(user != null ? user.UserName : string.Empty)
                 };
 
             return PartialView(deal);
@@ -87,7 +83,6 @@
         public ActionResult Deals()
         {
             List<Deal> deals = new List<Deal>();
-            User user = GetCurrentUser();
 
             try
             {
@@ -124,11 +119,14 @@
         {
             if (ModelState.IsValid)
             {
-                deal.UserName = this.GetCurrentUser().UserName;
+                deal.UserName = user.UserName;
 
-                deal.ImageUrl = this.UrlExists(deal.ImageUrl)
-                                    ? deal.ImageUrl
-                                    : Request.Url.Authority + Url.Content("~/images/deal.png");
+                if (!string.IsNullOrEmpty(deal.ImageUrl) && !this.UrlExists(deal.ImageUrl))
+                {
+                    ModelState.AddModelError("Image URL", "The image URL specified is not valid");
+                }
+
+                deal.ImageUrl = deal.ImageUrl ?? Request.Url.Authority + Url.Content("/images/deal.png");
 
                 try
                 {
@@ -141,9 +139,12 @@
                 }
             }
 
-            Response.Clear();
-            Response.StatusCode = 500;
-            Response.Write(ModelState.Values.First(a => a.Errors.Any()).Errors.First().ErrorMessage);
+            if (ModelState.Any(a => a.Value.Errors.Any()))
+            {
+                Response.Clear();
+                Response.StatusCode = 500;
+                Response.Write(ModelState.Values.First(a => a.Errors.Any()).Errors.First().ErrorMessage);
+            }
         }
 
         private bool UrlExists(string url)
@@ -178,8 +179,6 @@
             {
                 try
                 {
-                    User user = this.GetCurrentUser();
-
                     Deal deal = dealDataAccess.GetDeal(dealId);
 
                     if (user.UserName != deal.UserName)
@@ -237,8 +236,6 @@
                 }
             }
 
-            User user = GetCurrentUser();
-
             DealComments dealComments = new DealComments()
                 {
                     Comments = userComments.OrderByDescending(a => a.Value.Date),
@@ -257,7 +254,7 @@
                                       CommentString = commentWrapper.NewComment,
                                       Date = DateTime.Now,
                                       DealId = commentWrapper.Deal.DealID,
-                                      UserName = this.GetCurrentUser().UserName
+                                      UserName = user.UserName
                                   };
 
             try
@@ -279,8 +276,6 @@
             {
                 try
                 {
-                    User user = this.GetCurrentUser();
-
                     if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
                     {
                         dealDataAccess.SaveDealDescription(dealId, dealDescriptionEdit);
@@ -310,8 +305,6 @@
             {
                 try
                 {
-                    User user = this.GetCurrentUser();
-
                     if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
                     {
                         dealDataAccess.SaveDealActive(dealId, active);
@@ -320,10 +313,6 @@
                     {
                         // TODO: log the attempt!
                     }
-                }
-                catch (MemberDatabaseException)
-                {
-                    return RedirectToAction("LogOn", "Account");
                 }
                 catch (DealDatabaseException)
                 {
@@ -341,8 +330,6 @@
             {
                 try
                 {
-                    User user = this.GetCurrentUser();
-
                     if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
                     {
                         dealDataAccess.DeleteDeal(dealId);
@@ -403,31 +390,7 @@
                 // TODO: log db is down
             }
 
-            User user = GetCurrentUser();
-
             return View(new DealList() { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
-        }
-
-        private User GetCurrentUser()
-        {
-            try
-            {
-                string Username = sessionController.GetCurrentUser().Username;
-
-                return memberDataAccess.GetUser(Username);
-            }
-            catch (InvalidSessionException e)
-            {
-                // TODO: Log this!
-            }
-            catch (MemberDatabaseException e)
-            {
-                // TODO: Log this!
-            }
-
-            FormsAuthentication.SignOut();
-
-            return null;
         }
     }
 }

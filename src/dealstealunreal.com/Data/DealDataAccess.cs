@@ -112,7 +112,7 @@
                     using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = GetDealFromNameQuery;
-                        command.Parameters.AddWithValue("@dealTitle", "%"+dealName+"%");
+                        command.Parameters.AddWithValue("@dealTitle", "%" + dealName + "%");
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -156,7 +156,7 @@
 
                         command.Parameters.AddWithValue("@active", true);
                         command.Parameters.AddWithValue("@date", DateTime.Now);
-                        command.Parameters.AddWithValue("@description", deal.Description);
+                        command.Parameters.AddWithValue("@description", deal.Description ?? string.Empty);
                         command.Parameters.AddWithValue("@imageUrl", deal.ImageUrl);
                         command.Parameters.AddWithValue("@price", deal.Price);
                         command.Parameters.AddWithValue("@retailer", deal.Retailer);

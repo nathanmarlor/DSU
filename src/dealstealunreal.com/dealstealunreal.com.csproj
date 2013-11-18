@@ -105,6 +105,8 @@
     <Compile Include="Infrastructure\Security\Interfaces\IHash.cs" />
     <Compile Include="Infrastructure\Sessions\Interfaces\ISessionController.cs" />
     <Compile Include="Infrastructure\Sessions\SessionController.cs" />
+    <Compile Include="Infrastructure\Utilities\Interfaces\IUserUtilities.cs" />
+    <Compile Include="Infrastructure\Utilities\UserUtilities.cs" />
     <Compile Include="Models\Facebook\FacebookResponse.cs" />
     <Compile Include="Models\Sessions\Session.cs" />
     <Compile Include="Models\User\ChangePassword.cs" />

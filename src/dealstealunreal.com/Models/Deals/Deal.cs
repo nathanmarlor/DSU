@@ -10,21 +10,27 @@
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(2, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
+        [StringLength(30, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string Title { get; set; }
 
-        public string Description { get; set; }
-
+        [Required]
+        [StringLength(30, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string Retailer { get; set; }
 
         [Required]
+        [DataType(DataType.Url)]
+        [StringLength(1000, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string Url { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
         public double Price { get; set; }
 
-        [Required]
+        [DataType(DataType.ImageUrl)]
+        [StringLength(1000, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string ImageUrl { get; set; }
+
+        public string Description { get; set; }
 
         public DateTime Date { get; set; }
 

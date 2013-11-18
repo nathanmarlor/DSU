@@ -68,13 +68,13 @@
             <% using (Html.BeginForm("Comment", "Deal", FormMethod.Post, new { Class = "comment-form", id = "commentform" }))
                { %>
             <p class="logged-in-as">
-                
+                <%: Html.ValidationMessageFor(a => a.NewComment) %>
                 Logged in as
                 <%: Html.ActionLink(Model.CurrentUsername, "ShowProfile", "Account")%>.
             </p>
             <p class="comment-form-comment">
                 <%:Html.LabelFor(m => m.NewComment, "Comment")%>
-                <%:Html.TextAreaFor(m => m.NewComment, 8, 45, new Dictionary<string, Object> { { "aria-required", "true" }, { "id", "comment" } })%>
+                <%:Html.TextAreaFor(m => m.NewComment, new Dictionary<string, Object> { { "aria-required", "true" }, { "id", "comment" } })%>
                 </p>
             <p class="form-allowed-tags">
                 You may use these

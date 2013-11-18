@@ -6,11 +6,12 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Data.Interfaces;
-    using dealstealunreal.com.Models.Deals;
     using Exceptions;
     using Infrastructure.Security.Interfaces;
     using Infrastructure.Sessions.Interfaces;
+    using Infrastructure.Utilities.Interfaces;
     using Models;
+    using Models.Deals;
     using Models.User;
     using Models.Wrappers;
     using Recaptcha;
@@ -22,21 +23,22 @@
         private readonly IRecoverPassword forgotPassword;
         private readonly IDealDataAccess dealDataAccess;
         private readonly IHash hash;
+        private readonly User user;
 
-        public AccountController(IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash)
+        public AccountController(IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IUserUtilities userUtils)
         {
             this.memberDataAccess = memberDataAccess;
             this.sessionController = sessionController;
             this.forgotPassword = forgotPassword;
             this.dealDataAccess = dealDataAccess;
             this.hash = hash;
+
+            this.user = userUtils.GetCurrentUser();
         }
 
         public ActionResult LogOn()
         {
-            bool authenticated = GetCurrentUser() != null;
-
-            if (authenticated)
+            if (user != null)
             {
                 return RedirectToAction("ShowProfile", "Account");
             }
@@ -85,7 +87,7 @@
         [HttpPost]
         public ActionResult Register(Register model, bool captchaValid)
         {
-            if (ModelState.IsValid )//&& captchaValid)
+            if (ModelState.IsValid)//&& captchaValid)
             {
                 // Check if user already exists
 
@@ -170,8 +172,6 @@
 
         public ActionResult EditProfile()
         {
-            User user = GetCurrentUser();
-
             if (user == null)
             {
                 return View("LogOn");
@@ -192,8 +192,6 @@
         {
             if (ModelState.IsValid)
             {
-                User user = GetCurrentUser();
-
                 if (user == null)
                 {
                     return View("LogOn");
@@ -242,8 +240,6 @@
 
         public ActionResult ShowProfile(string userId = null)
         {
-            User user = GetCurrentUser();
-
             User userFromId = null;
             IList<Deal> deals = new List<Deal>();
 
@@ -276,33 +272,11 @@
             UserDeals deal = new UserDeals()
             {
                 User = notNullUser,
-                Deals = deals.Where(a => a.UserName.Trim().ToLower().Equals(notNullUser.UserName.ToLower().Trim())).ToList(),
+                Deals = deals.Where(a => a.UserName.Trim().ToLower().Equals(notNullUser.UserName.Trim().ToLower())).ToList(),
                 IsCurrentUser = notNullUser.UserName.ToLower().Trim().Equals(user != null ? user.UserName.ToLower().Trim() : string.Empty)
             };
 
             return View(deal);
-        }
-
-        private User GetCurrentUser()
-        {
-            try
-            {
-                string Username = sessionController.GetCurrentUser().Username;
-
-                return memberDataAccess.GetUser(Username);
-            }
-            catch (InvalidSessionException e)
-            {
-                // TODO: Log this!
-            }
-            catch (MemberDatabaseException e)
-            {
-                // TODO: Log this!
-            }
-
-            ClearSession();
-
-            return null;
         }
 
         private void ClearSession()
