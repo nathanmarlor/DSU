@@ -126,7 +126,9 @@
                     ModelState.AddModelError("Image URL", "The image URL specified is not valid");
                 }
 
-                deal.ImageUrl = deal.ImageUrl ?? Request.Url.Authority + Url.Content("/images/deal.png");
+                deal.ImageUrl = deal.ImageUrl ?? "http://" + Request.Url.Authority + Url.Content("/images/deal.png");
+
+                deal.Url = deal.Url.StartsWith("http://") ? deal.Url : "http://" + deal.Url;
 
                 try
                 {

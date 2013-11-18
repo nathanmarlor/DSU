@@ -1,0 +1,18 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/dealstealunreal.com/Global.asax.cs">
+    <Files>
+      <File FileName="src/dealstealunreal.com/Controllers/AccountController.cs" Line="1" Column="1" />
+      <File FileName="src/dealstealunreal.com/Infrastructure/Utilities/GravatatHtmlHelper.cs" Line="95" Column="20" />
+      <File FileName="src/dealstealunreal.com/Controllers/DealController.cs" Line="1" Column="1" />
+      <File FileName="src/dealstealunreal.com/Controllers/HomeController.cs" Line="1" Column="1" />
+      <File FileName="src/dealstealunreal.com/Data/MemberDataAccess.cs" Line="1" Column="1" />
+      <File FileName="src/dealstealunreal.com/Data/CommentDataAccess.cs" Line="1" Column="1" />
+      <File FileName="src/dealstealunreal.com/Global.asax.cs" Line="14" Column="51" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
