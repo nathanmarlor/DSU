@@ -193,13 +193,12 @@
                     if (user.UserName != deal.UserName)
                     {
                         voteDataAccess.AddVote(dealId, user.UserName, DateTime.Now, vote);
+                        memberDataAccess.AddPoint(deal.UserName);
                     }
                     else
                     {
                         // TODO: log attempt!
                     }
-
-                    memberDataAccess.AddPoint(deal.UserName);
                 }
                 catch (DealDatabaseException)
                 {

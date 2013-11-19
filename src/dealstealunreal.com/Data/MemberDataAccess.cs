@@ -3,10 +3,10 @@
     using System;
     using System.Configuration;
     using System.Data.SqlClient;
+    using Exceptions;
     using Interfaces;
     using Models;
     using Models.User;
-    using Exceptions;
 
     public class MemberDataAccess : IMemberDataAccess
     {
@@ -14,7 +14,7 @@
         private const string SaveUserQuery = "insert into Users (Username, Password, Email, ProfilePicture, Points) values(@userName, @password, @email, @profilePicture, @points)";
         private const string ChangePasswordQuery = "update Users set Password = @password where Username = @userName";
         private const string UpdateUserQuery = "update Users set Email = @email, ProfilePicture = @profilePicture where Username = @userName";
-        private const string AddPointsQuery = "update Users set Points = Points + @pointValue where Users.Username =  (select Username from Deals where DealId = 1)";
+        private const string AddPointsQuery = "update Users set Points = Points + @pointValue where Users.Username = @userId";
 
         public User GetUser(string userId)
         {
@@ -81,6 +81,7 @@
                         command.CommandText = AddPointsQuery;
 
                         command.Parameters.AddWithValue("@pointValue", pointValue);
+                        command.Parameters.AddWithValue("@userId", userId);
 
                         command.ExecuteNonQuery();
                     }
