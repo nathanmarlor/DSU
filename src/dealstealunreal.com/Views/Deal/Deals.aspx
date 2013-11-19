@@ -19,7 +19,7 @@
             <input type="submit" class="no_deal" name="no_deal_x" />
             <% } %>
         </div>
-        <div class="pos_deal">
+        <div class="pos_deal" onclick="window.open('<%: deal.Url %>')">
             <% using (Html.BeginForm("Voting", "Deal", FormMethod.Post))
                { %>
             <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.PositiveVote)%>
