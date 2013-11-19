@@ -121,13 +121,16 @@
             {
                 deal.UserName = user.UserName;
 
-                if (!string.IsNullOrEmpty(deal.ImageUrl) && !this.UrlExists(deal.ImageUrl))
+                if (!this.UrlExists(deal.ImageUrl) || deal.ImageUrl.EndsWith(".jpg") || deal.ImageUrl.EndsWith(".png"))
                 {
                     ModelState.AddModelError("Image URL", "The image URL specified is not valid");
                 }
                 else
                 {
-                    deal.ImageUrl = deal.ImageUrl ?? "http://" + Request.Url.Authority + Url.Content("/images/deal.png");
+                    if (string.IsNullOrEmpty(deal.ImageUrl))
+                    {
+                        deal.ImageUrl = "http://" + Request.Url.Authority + Url.Content("/images/deal.png");
+                    }
 
                     deal.Url = deal.Url.StartsWith("http://") ? deal.Url : "http://" + deal.Url;
 
@@ -157,10 +160,10 @@
 
             try
             {
-                var request = (HttpWebRequest) WebRequest.Create(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "HEAD";
 
-                response = (HttpWebResponse) request.GetResponse();
+                response = (HttpWebResponse)request.GetResponse();
                 return true;
             }
             catch (WebException ex)
