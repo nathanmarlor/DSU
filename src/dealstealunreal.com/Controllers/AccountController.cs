@@ -170,7 +170,7 @@
                 }
             }
 
-            return View(model);
+            return View("RecoverPasswordSuccess");
         }
 
         public ActionResult EditProfile()
