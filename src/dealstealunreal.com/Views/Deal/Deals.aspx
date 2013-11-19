@@ -45,7 +45,7 @@
     </div>
     <% } %>
     <h2 class="deal-title">
-        <a target="_blank" href="<%: deal.Url %>" onclick="window.open('<%: deal.Url %>')"><%: deal.Title %>- <b>£<%: deal.Price %></b>@ <%: deal.Retailer %></a>
+        <a target="_blank" href="<%: deal.Url %>"><%: deal.Title %>- <b>£<%: deal.Price %></b>@ <%: deal.Retailer %></a>
     </h2>
     <div id="frontpostmeta" class="post-meta">
         <span class="post-author">by <%: Html.ActionLink(deal.UserName, "ShowProfile", new { Controller="Account", UserID=deal.UserName })%> </span>
