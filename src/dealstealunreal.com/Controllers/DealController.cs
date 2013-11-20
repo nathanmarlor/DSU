@@ -121,7 +121,7 @@
             {
                 deal.UserName = user.UserName;
 
-                if (!this.UrlExists(deal.ImageUrl) || deal.ImageUrl.EndsWith(".jpg") || deal.ImageUrl.EndsWith(".png"))
+                if (!string.IsNullOrEmpty(deal.ImageUrl) && !(this.UrlExists(deal.ImageUrl) || deal.ImageUrl.EndsWith(".jpg") || deal.ImageUrl.EndsWith(".png")))
                 {
                     ModelState.AddModelError("Image URL", "The image URL specified is not valid");
                 }

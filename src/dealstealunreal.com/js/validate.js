@@ -5,7 +5,8 @@ function clearFields(){
 	jQuery('#deal_url').val('');
 	jQuery('#deal_price').val('');
 	jQuery('#deal_image_url').val('');
-	jQuery('#deal_description').val('');	
+	jQuery('#deal_description').val('');
+	jQuery('#topError').text('');
 }
 
 //close popup
@@ -27,9 +28,7 @@ function showform(){
 
 function loginFirst(url,info){
 	alert(info);
-	//alert("Got a deal? Please login to submit.");
 	window.location.href=url;
-	//window.location.href=url+"/wp-admin/";
 }
 
 function openBox(){
