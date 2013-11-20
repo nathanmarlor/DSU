@@ -1,6 +1,5 @@
 ﻿namespace dealstealunreal.com.Infrastructure.Utilities
 {
-    using System.Web.Security;
     using Data.Interfaces;
     using Exceptions;
     using Interfaces;
@@ -22,9 +21,9 @@
         {
             try
             {
-                string Username = sessionController.GetCurrentUser().Username;
+                string username = sessionController.GetCurrentUsersSession().Username;
 
-                return memberDataAccess.GetUser(Username);
+                return memberDataAccess.GetUser(username);
             }
             catch (InvalidSessionException e)
             {
@@ -35,7 +34,7 @@
                 // TODO: Log this!
             }
 
-            FormsAuthentication.SignOut();
+            sessionController.Logoff();
 
             return null;
         }

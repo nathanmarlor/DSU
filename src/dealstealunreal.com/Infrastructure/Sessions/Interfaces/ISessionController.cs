@@ -9,7 +9,7 @@
 
         void Logoff();
 
-        Session GetCurrentUser();
+        Session GetCurrentUsersSession();
 
         void PruneSessions();
     }

@@ -1,5 +1,4 @@
-﻿
-namespace dealstealunreal.com.Infrastructure.Sessions
+﻿namespace dealstealunreal.com.Infrastructure.Sessions
 {
     using System;
     using System.Collections.Generic;
@@ -7,11 +6,11 @@ namespace dealstealunreal.com.Infrastructure.Sessions
     using System.Web;
     using System.Web.Security;
     using Data.Interfaces;
-    using dealstealunreal.com.Infrastructure.Security.Interfaces;
-    using dealstealunreal.com.Models.Sessions;
     using Exceptions;
     using Interfaces;
+    using Models.Sessions;
     using Models.User;
+    using Security.Interfaces;
 
     public class SessionController : ISessionController
     {
@@ -50,15 +49,25 @@ namespace dealstealunreal.com.Infrastructure.Sessions
                 return false;
             }
 
-            FormsAuthentication.SetAuthCookie(username, rememberMe);
-
-            Session session = new Session()
+            Session session = new Session
                                   {
                                       SessionId = Guid.NewGuid(),
                                       Username = user.UserName,
                                       LastUpdated = DateTime.Now,
                                       RememberMe = rememberMe
                                   };
+
+            var cookie = FormsAuthentication.GetAuthCookie("DealStealUnreal", session.RememberMe);
+
+            cookie.Expires = DateTime.Now.AddYears(10);
+
+            var ticket = FormsAuthentication.Decrypt(cookie.Value);
+
+            var newTicket = new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, session.SessionId.ToString());
+
+            cookie.Value = FormsAuthentication.Encrypt(newTicket);
+
+            HttpContext.Current.Response.Cookies.Add(cookie);
 
             HttpContext.Current.Session["sessionId"] = session.SessionId;
 
@@ -88,6 +97,8 @@ namespace dealstealunreal.com.Infrastructure.Sessions
 
                 sessions.Remove(sessionId);
 
+                HttpContext.Current.Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+
                 sessionDataAccess.DeleteSession(sessionId);
             }
             catch (InvalidSessionException)
@@ -97,28 +108,6 @@ namespace dealstealunreal.com.Infrastructure.Sessions
             finally
             {
                 locker.ExitWriteLock();
-            }
-        }
-
-        public Session GetCurrentUser()
-        {
-            locker.EnterReadLock();
-
-            try
-            {
-                Guid sessionId = GetSessionId();
-
-                sessionDataAccess.UpdateSessionTime(sessionId, DateTime.Now);
-
-                sessions[sessionId].LastUpdated = DateTime.Now;
-
-                FormsAuthentication.SetAuthCookie(sessions[sessionId].Username, sessions[sessionId].RememberMe);
-
-                return sessions[sessionId];
-            }
-            finally
-            {
-                locker.ExitReadLock();
             }
         }
 
@@ -156,19 +145,50 @@ namespace dealstealunreal.com.Infrastructure.Sessions
             }
         }
 
+        public Session GetCurrentUsersSession()
+        {
+            locker.EnterReadLock();
+
+            try
+            {
+                Guid sessionId = GetSessionId();
+
+                sessionDataAccess.UpdateSessionTime(sessionId, DateTime.Now);
+
+                sessions[sessionId].LastUpdated = DateTime.Now;
+
+                return sessions[sessionId];
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
+        }
+
         private Guid GetSessionId()
         {
             var sessionString = HttpContext.Current.Session["sessionId"] ?? Guid.Empty;
 
             Guid sessionGuid = Guid.Parse(sessionString.ToString());
 
-            if (!sessions.ContainsKey(sessionGuid))
+            if (sessions.ContainsKey(sessionGuid))
             {
-                // TODO: Log, this is not a session we know about!
-                throw new InvalidSessionException();
+                return sessionGuid;
             }
 
-            return sessionGuid;
+            var httpCookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+            if (httpCookie != null)
+            {
+                var ticket = FormsAuthentication.Decrypt(httpCookie.Value);
+                if (ticket != null)
+                {
+                    var guid = Guid.Parse(ticket.UserData);
+                    HttpContext.Current.Session["sessionId"] = guid;
+                    return guid;
+                }
+            }
+
+            throw new InvalidSessionException();
         }
 
         private void Load()
