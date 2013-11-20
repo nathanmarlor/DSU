@@ -1,20 +1,10 @@
-﻿
-namespace dealstealunreal.com.Infrastructure.Processing
+﻿namespace dealstealunreal.com.Infrastructure.Processing
 {
     using System.Configuration;
-
-    using Data.Interfaces;
     using Interfaces;
 
     public class VoteProcessor : IVoteProcessor
     {
-        private readonly IDealDataAccess dealDataAccess;
-
-        public VoteProcessor(IDealDataAccess dealDataAccess)
-        {
-            this.dealDataAccess = dealDataAccess;
-        }
-
         public int CalculateVote(int votes)
         {
             double dealLimit = double.Parse(ConfigurationManager.AppSettings["Deal"]);

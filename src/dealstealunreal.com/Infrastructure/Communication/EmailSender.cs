@@ -4,9 +4,7 @@
     using System.Configuration;
     using System.Net;
     using System.Net.Mail;
-
-    using dealstealunreal.com.Exceptions;
-
+    using Exceptions;
     using Interfaces;
 
     public class EmailSender : IEmailSender
@@ -38,7 +36,7 @@
             }
             catch (Exception e)
             {
-                //TODO: Log
+                // TODO: Log
                 throw new SendEmailException();
             }
         }

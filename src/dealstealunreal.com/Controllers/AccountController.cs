@@ -7,6 +7,7 @@
     using System.Web.Security;
     using Data.Interfaces;
     using Exceptions;
+    using Infrastructure.Communication.Interfaces;
     using Infrastructure.Security.Interfaces;
     using Infrastructure.Sessions.Interfaces;
     using Infrastructure.Utilities.Interfaces;
@@ -23,15 +24,17 @@
         private readonly IRecoverPassword forgotPassword;
         private readonly IDealDataAccess dealDataAccess;
         private readonly IHash hash;
+        private readonly IEmailSender emailSender;
         private readonly User user;
 
-        public AccountController(IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IUserUtilities userUtils)
+        public AccountController(IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IUserUtilities userUtils, IEmailSender emailSender)
         {
             this.memberDataAccess = memberDataAccess;
             this.sessionController = sessionController;
             this.forgotPassword = forgotPassword;
             this.dealDataAccess = dealDataAccess;
             this.hash = hash;
+            this.emailSender = emailSender;
 
             this.user = userUtils.GetCurrentUser();
         }
@@ -133,6 +136,8 @@
                     memberDataAccess.CreateUser(model);
 
                     sessionController.Logon(model.UserName, pass, false);
+
+                    emailSender.SendEmail(model.Email, "DSU", "Thank you for registering with DealStealUnreal!");
 
                     return PartialView("RegisterSuccess");
                 }
