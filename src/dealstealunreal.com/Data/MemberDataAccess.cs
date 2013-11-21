@@ -10,7 +10,7 @@
 
     public class MemberDataAccess : IMemberDataAccess
     {
-        private const string GetUserQuery = "select * from Users where Username = @userName";
+        private const string GetUserQuery = "select * from Users where Username = @userId or Email = @userId";
         private const string SaveUserQuery = "insert into Users (Username, Password, Email, ProfilePicture, Points) values(@userName, @password, @email, @profilePicture, @points)";
         private const string ChangePasswordQuery = "update Users set Password = @password where Username = @userName";
         private const string UpdateUserQuery = "update Users set Email = @email, ProfilePicture = @profilePicture where Username = @userName";
@@ -31,13 +31,13 @@
                     using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = GetUserQuery;
-                        command.Parameters.AddWithValue("@userName", userId);
+                        command.Parameters.AddWithValue("@userId", userId);
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                return new User()
+                                return new User
                                     {
                                         UserName = reader.GetString(reader.GetOrdinal("Username")).Trim(),
                                         Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),

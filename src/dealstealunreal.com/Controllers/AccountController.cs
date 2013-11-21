@@ -145,6 +145,11 @@
                 {
                     ModelState.AddModelError("System", "An error occurred whilst attempting to register - please try again later");
                 }
+                catch (SendEmailException e)
+                {
+                    // log that an email couldn't be sent to a user
+                    return PartialView("RegisterSuccess");
+                }
             }
             else if (!captchaValid)
             {

@@ -26,8 +26,8 @@
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     EnableSsl = isSsl,
                     UseDefaultCredentials = !useCredential,
-                    Credentials = useCredential ? new NetworkCredential(email, password) : null
-
+                    Credentials = useCredential ? new NetworkCredential(email, password) : null,
+                    Timeout = 2
                 };
 
             try

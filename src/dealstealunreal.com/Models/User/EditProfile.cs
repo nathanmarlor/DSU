@@ -3,6 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.Web;
     using System.Web.Mvc;
+    using DataAnnotationsExtensions;
 
     public class EditProfile
     {
@@ -10,7 +11,7 @@
         public string UserName { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
+        [Email]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [Display(Name = "Email address")]
         public string Email { get; set; }
