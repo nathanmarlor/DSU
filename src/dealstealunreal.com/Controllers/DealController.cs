@@ -376,6 +376,12 @@
                 // TODO: log db is down
             }
 
+            foreach (Deal deal in deals)
+            {
+                int votes = voteDataAccess.GetVotes(deal.DealID);
+                deal.Votes = voteProcessor.CalculateVote(votes);
+            }
+
             IOrderedEnumerable<Deal> orderedDeals = deals.Where(d => d.Date > DateTime.Now.AddDays(-7) && d.Active).OrderByDescending(a => a.Votes);
 
             List<Deal> topFive = orderedDeals.Take(5).ToList();
@@ -403,7 +409,14 @@
                 // TODO: log db is down
             }
 
-            return View(new DealList() { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
+            foreach (Deal deal in deals)
+            {
+                int votes = voteDataAccess.GetVotes(deal.DealID);
+                deal.Votes = voteProcessor.CalculateVote(votes);
+                deal.CanVote = voteDataAccess.CanVote(deal.DealID, user == null ? string.Empty : user.UserName);
+            }
+
+            return View(new DealList { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
         }
     }
 }
