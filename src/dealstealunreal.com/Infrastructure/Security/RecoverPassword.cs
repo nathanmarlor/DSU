@@ -23,9 +23,11 @@
 
         public void ResetPassword(string userId)
         {
+            User user = new User();
+
             try
             {
-                User user = memberDataAccess.GetUser(userId);
+                user = memberDataAccess.GetUser(userId);
 
                 string newPass = GenerateRandomString();
 
@@ -41,7 +43,7 @@
             catch (SendEmailException e)
             {
                 // TODO: log this error
-                throw new RecoverPasswordException(string.Format("Could not send reset password email for user {0}", userId));
+                throw new RecoverPasswordException(string.Format("Could not send reset password email for user: {0} with email address: {1}", user.UserName, user.Email));
             }
         }
 
