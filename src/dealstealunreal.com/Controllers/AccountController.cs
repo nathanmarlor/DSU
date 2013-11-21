@@ -172,6 +172,7 @@
                 catch (RecoverPasswordException e)
                 {
                     ModelState.AddModelError("System", e.Message);
+                    return View(model);
                 }
             }
 

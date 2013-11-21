@@ -23,11 +23,9 @@
 
         public void ResetPassword(string userId)
         {
-            User user;
-
             try
             {
-                user = memberDataAccess.GetUser(userId);
+                User user = memberDataAccess.GetUser(userId);
 
                 string newPass = GenerateRandomString();
 
@@ -49,10 +47,10 @@
 
         private static string GenerateRandomString()
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
             return new string(
-                Enumerable.Repeat(chars, 8)
+                Enumerable.Repeat(Chars, 8)
                           .Select(s => s[random.Next(s.Length)])
                           .ToArray());
         }
