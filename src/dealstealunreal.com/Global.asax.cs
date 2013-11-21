@@ -1,15 +1,23 @@
 ﻿namespace dealstealunreal.com
 {
+    using System.IO;
     using System.Reflection;
     using System.Threading;
     using System.Web.Mvc;
     using System.Web.Routing;
-    using dealstealunreal.com.Infrastructure.Sessions.Interfaces;
+    using Infrastructure.Sessions.Interfaces;
+    using log4net.Config;
     using Ninject;
+    using Ninject.Extensions.Logging;
+    using Ninject.Extensions.Logging.Log4net.Infrastructure;
     using Ninject.Web.Common;
 
     public class MvcApplication : NinjectHttpApplication
     {
+        private const string ConfigPath = @"C:\Users\Nathan\DSU\config\dsu.log4net.config";
+
+        private ILogger log;
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -32,22 +40,19 @@
 
         protected override IKernel CreateKernel()
         {
+            XmlConfigurator.ConfigureAndWatch(new FileInfo(ConfigPath));
+            this.log = new Log4NetLogger(typeof(MvcApplication));
+            this.log.Info("Starting DealStealUnreal");
+
             var kernel = new StandardKernel();
             kernel.Load(Assembly.GetExecutingAssembly());
+
+            this.log.Info("Successfully initialised dependency injection");
 
             Thread pruneThread = new Thread(kernel.Get<ISessionController>().PruneSessions) { IsBackground = true };
             pruneThread.Start();
 
             return kernel;
-        }
-
-        /// <summary>
-        /// Load your modules or register your services here!
-        /// </summary>
-        /// <param name="kernel">The kernel.</param>
-        private void RegisterServices(IKernel kernel)
-        {
-            // e.g. kernel.Load(Assembly.GetExecutingAssembly());
         }
 
         protected override void OnApplicationStarted()

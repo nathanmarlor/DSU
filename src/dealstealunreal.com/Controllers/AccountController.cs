@@ -15,10 +15,12 @@
     using Models.Deals;
     using Models.User;
     using Models.Wrappers;
+    using Ninject.Extensions.Logging;
     using Recaptcha;
 
     public class AccountController : Controller
     {
+        private readonly ILogger log;
         private readonly IMemberDataAccess memberDataAccess;
         private readonly ISessionController sessionController;
         private readonly IRecoverPassword forgotPassword;
@@ -27,8 +29,9 @@
         private readonly IEmailSender emailSender;
         private readonly User user;
 
-        public AccountController(IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IUserUtilities userUtils, IEmailSender emailSender)
+        public AccountController(ILogger log, IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IUserUtilities userUtils, IEmailSender emailSender)
         {
+            this.log = log;
             this.memberDataAccess = memberDataAccess;
             this.sessionController = sessionController;
             this.forgotPassword = forgotPassword;
@@ -43,6 +46,7 @@
         {
             if (user != null)
             {
+                log.Trace("GET request to log on from user {0}", user.UserName);
                 return RedirectToAction("ShowProfile", "Account");
             }
 
@@ -56,8 +60,7 @@
             {
                 if (sessionController.Logon(model.UserName, model.Password, model.RememberMe))
                 {
-                    if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
-                        && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
+                    if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
                         return Redirect(returnUrl);
                     }
@@ -65,7 +68,8 @@
                     return RedirectToAction("ShowProfile");
                 }
 
-                ModelState.AddModelError("", "The user name or password provided is incorrect.");
+                log.Debug("Could not log on user: {0} pass: {1}", model.UserName, model.Password);
+                ModelState.AddModelError("System", "The user name or password provided is incorrect.");
             }
 
             // If we got this far, something failed, redisplay form
