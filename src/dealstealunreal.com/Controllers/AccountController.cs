@@ -10,7 +10,6 @@
     using Infrastructure.Communication.Interfaces;
     using Infrastructure.Security.Interfaces;
     using Infrastructure.Sessions.Interfaces;
-    using Infrastructure.Utilities.Interfaces;
     using Models;
     using Models.Deals;
     using Models.User;
@@ -29,7 +28,7 @@
         private readonly IEmailSender emailSender;
         private readonly User user;
 
-        public AccountController(ILogger log, IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IUserUtilities userUtils, IEmailSender emailSender)
+        public AccountController(ILogger log, IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IEmailSender emailSender)
         {
             this.log = log;
             this.memberDataAccess = memberDataAccess;
@@ -39,14 +38,13 @@
             this.hash = hash;
             this.emailSender = emailSender;
 
-            this.user = userUtils.GetCurrentUser();
+            user = this.GetCurrentUser();
         }
 
         public ActionResult LogOn()
         {
             if (user != null)
             {
-                log.Trace("GET request to log on from user {0}", user.UserName);
                 return RedirectToAction("ShowProfile", "Account");
             }
 
@@ -60,11 +58,7 @@
             {
                 if (sessionController.Logon(model.UserName, model.Password, model.RememberMe))
                 {
-                    if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
-                    {
-                        return Redirect(returnUrl);
-                    }
-
+                    log.Debug("Successfully logged on user: {0}", model.UserName);
                     return RedirectToAction("ShowProfile");
                 }
 
@@ -80,7 +74,11 @@
         {
             sessionController.Logoff();
 
-            ClearSession();
+            log.Trace("Clearing session for user: {0}", user.UserName);
+
+            FormsAuthentication.SignOut();
+
+            RedirectToAction("LogOn", "Account");
 
             return RedirectToAction("Index", "Home");
         }
@@ -94,19 +92,23 @@
         [HttpPost]
         public ActionResult Register(Register model, bool captchaValid)
         {
-            if (ModelState.IsValid)//&& captchaValid)
+            if (ModelState.IsValid && captchaValid)
             {
-                // Check if user already exists
+                log.Trace("Attempt to register user: {0} email: {1} profile picture: {2}", model.UserName, model.Email, model.ProfilePicturePath);
 
                 try
                 {
                     memberDataAccess.GetUser(model.UserName);
+
+                    log.Debug("Attempt to register user failed, user: {0} already exists", model.UserName);
+
                     ModelState.AddModelError("System", "The username you have chosen is currently in use");
+
                     return this.View(model);
                 }
                 catch (MemberDatabaseException)
                 {
-                    // TODO: Log success
+                    log.Trace("User {0} does not already exist, can be registered");
                 }
 
                 // Attempt to register the user
@@ -121,19 +123,23 @@
                         // save avatar
                         string filename = Guid.NewGuid() + model.ProfilePicture.FileName;
                         string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
+
+                        log.Debug("Saving user: {0} profile picture with path: {1}", model.UserName, pathfile);
+
                         try
                         {
                             model.ProfilePicture.SaveAs(pathfile);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
-                            // TODO: Logging!
+                            log.Warn(e, "Could not save users: {0} profile picture with path: {1}", model.UserName, pathfile);
                         }
 
                         model.ProfilePicturePath = "~/uploads/avatars/" + filename;
                     }
                     else
                     {
+                        log.Trace("Setting profile picture to default for user: {0}", model.UserName);
                         model.ProfilePicturePath = "~/images/default_user_profile.jpg";
                     }
 
@@ -147,11 +153,12 @@
                 }
                 catch (MemberDatabaseException e)
                 {
+                    log.Warn(e, "An error occurred whilst trying to register user: {0}", model.UserName);
                     ModelState.AddModelError("System", "An error occurred whilst attempting to register - please try again later");
                 }
                 catch (SendEmailException e)
                 {
-                    // log that an email couldn't be sent to a user
+                    log.Warn(e, "Attempt to send email to {0} with email address {1} failed", model.UserName, model.Email);
                     return PartialView("RegisterSuccess");
                 }
             }
@@ -228,12 +235,13 @@
                     string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
                     try
                     {
+                        log.Debug("Saving user: {0} profile picture with path: {1}", model.UserName, pathfile);
                         model.ProfilePicture.SaveAs(pathfile);
                         user.ProfilePicture = filename;
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        // TODO: Logging!
+                        log.Warn(e, "Could not save users: {0} profile picture with path: {1}", model.UserName, pathfile);
                     }
 
                     user.ProfilePicture = "~/uploads/avatars/" + user.ProfilePicture;
@@ -246,8 +254,9 @@
                 {
                     memberDataAccess.UpdateUser(user);
                 }
-                catch (MemberDatabaseException)
+                catch (MemberDatabaseException e)
                 {
+                    log.Warn(e, "An error occurred whilst trying to register user: {0}", model.UserName);
                     ModelState.AddModelError("System", "An error occurred whilst attempting to update your profile - please try again later");
                     return View(model);
                 }
@@ -264,20 +273,21 @@
             try
             {
                 deals = dealDataAccess.GetAllDeals();
-                userFromId = memberDataAccess.GetUser(userId);
+
+                if (userId != null)
+                {
+                    userFromId = memberDataAccess.GetUser(userId);
+                }
             }
-            catch (MemberDatabaseException e)
+            catch (MemberDatabaseException)
             {
-                // TODO: Log that the user wasnt found
+                log.Warn("Attempted to load profile for a non existant user {0}", userId);
+
+                return this.PartialView("UserDoesNotExist");
             }
             catch (DealDatabaseException e)
             {
-                // TODO: Could not load deals
-            }
-
-            if (userId != null && userFromId == null)
-            {
-                return this.PartialView("UserDoesNotExist");
+                log.Warn(e, "Could not load deals from the database");
             }
 
             if (user == null && userId == null)
@@ -287,21 +297,41 @@
 
             User notNullUser = userFromId ?? user;
 
-            UserDeals deal = new UserDeals()
+            List<Deal> userDeals = deals.Where(a => a.UserName.Equals(notNullUser.UserName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            bool currentUser = notNullUser.UserName.Equals(user != null ? user.UserName : string.Empty, StringComparison.InvariantCultureIgnoreCase);
+
+            log.Debug("Returning {0} deals for user {1} and current user is {2}", userDeals.Count, notNullUser.UserName, currentUser);
+
+            UserDeals deal = new UserDeals
             {
                 User = notNullUser,
-                Deals = deals.Where(a => a.UserName.Trim().ToLower().Equals(notNullUser.UserName.Trim().ToLower())).ToList(),
-                IsCurrentUser = notNullUser.UserName.ToLower().Trim().Equals(user != null ? user.UserName.ToLower().Trim() : string.Empty)
+                Deals = userDeals,
+                IsCurrentUser = currentUser
             };
 
             return View(deal);
         }
 
-        private void ClearSession()
+        private User GetCurrentUser()
         {
-            FormsAuthentication.SignOut();
+            try
+            {
+                string username = sessionController.GetCurrentUsersSession().Username;
 
-            RedirectToAction("LogOn", "Account");
+                return memberDataAccess.GetUser(username);
+            }
+            catch (InvalidSessionException)
+            {
+                log.Trace("Session was retrieved but is not one we know about");
+            }
+            catch (MemberDatabaseException)
+            {
+                log.Trace("Could not retrieve current user, continuing unauthenticated");
+            }
+
+            sessionController.Logoff();
+
+            return null;
         }
     }
 }

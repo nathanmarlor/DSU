@@ -13,7 +13,6 @@
     using Sessions;
     using Sessions.Interfaces;
     using Utilities;
-    using Utilities.Interfaces;
 
     public class DealStealUnrealModule : NinjectModule
     {
@@ -56,12 +55,8 @@
             Bind<IVoteDataAccess>()
                 .To<VoteDataAccess>();
 
-            Bind<IUserUtilities>()
-                .To<UserUtilities>();
-
-            //Bind<DealController>()
-            //    .ToSelf()
-            //    .WithConstructorArgument("user", Kernel.Get<IUserUtilities>().GetCurrentUser());
+            Bind<ICurrentUser>()
+                .To<CurrentUser>();
         }
     }
 }

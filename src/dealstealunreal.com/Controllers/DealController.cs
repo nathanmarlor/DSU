@@ -8,30 +8,35 @@
     using Data.Interfaces;
     using Exceptions;
     using Infrastructure.Processing.Interfaces;
-    using Infrastructure.Utilities.Interfaces;
+    using Infrastructure.Sessions.Interfaces;
     using Models;
     using Models.Deals;
     using Models.User;
     using Models.Wrappers;
+    using Ninject.Extensions.Logging;
 
     public class DealController : Controller
     {
+        private readonly ILogger log;
         private readonly IDealDataAccess dealDataAccess;
         private readonly IMemberDataAccess memberDataAccess;
         private readonly ICommentDataAccess commentDataAccess;
         private readonly IVoteDataAccess voteDataAccess;
         private readonly IVoteProcessor voteProcessor;
+        private readonly ISessionController sessionController;
         private readonly User user;
 
-        public DealController(IDealDataAccess dealDataAccess, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor, IUserUtilities userUtils)
+        public DealController(ILogger log, IDealDataAccess dealDataAccess, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor, ISessionController sessionController)
         {
+            this.log = log;
             this.dealDataAccess = dealDataAccess;
             this.memberDataAccess = memberDataAccess;
             this.commentDataAccess = commentDataAccess;
             this.voteDataAccess = voteDataAccess;
             this.voteProcessor = voteProcessor;
+            this.sessionController = sessionController;
 
-            this.user = userUtils.GetCurrentUser();
+            this.user = GetCurrentUser();
         }
 
         public ActionResult Index()
@@ -417,6 +422,28 @@
             }
 
             return View(new DealList { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
+        }
+
+        private User GetCurrentUser()
+        {
+            try
+            {
+                string username = sessionController.GetCurrentUsersSession().Username;
+
+                return memberDataAccess.GetUser(username);
+            }
+            catch (InvalidSessionException)
+            {
+                log.Trace("Session was retrieved but is not one we know about");
+            }
+            catch (MemberDatabaseException)
+            {
+                log.Trace("Could not retrieve current user, continuing unauthenticated");
+            }
+
+            sessionController.Logoff();
+
+            return null;
         }
     }
 }

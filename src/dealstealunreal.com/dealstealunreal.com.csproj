@@ -50,6 +50,9 @@
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Extensions.Interception">
+      <HintPath>..\..\packages\Ninject.Extensions.Interception.3.0.0.8\lib\net40\Ninject.Extensions.Interception.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject.Extensions.Logging">
       <HintPath>..\..\packages\Ninject.Extensions.Logging.3.0.1.0\lib\net40\Ninject.Extensions.Logging.dll</HintPath>
     </Reference>
@@ -122,8 +125,8 @@
     <Compile Include="Infrastructure\Security\Interfaces\IHash.cs" />
     <Compile Include="Infrastructure\Sessions\Interfaces\ISessionController.cs" />
     <Compile Include="Infrastructure\Sessions\SessionController.cs" />
-    <Compile Include="Infrastructure\Utilities\Interfaces\IUserUtilities.cs" />
-    <Compile Include="Infrastructure\Utilities\UserUtilities.cs" />
+    <Compile Include="Infrastructure\Utilities\CurrentUser.cs" />
+    <Compile Include="Infrastructure\Utilities\ICurrentUser.cs" />
     <Compile Include="Models\Facebook\FacebookResponse.cs" />
     <Compile Include="Models\Sessions\Session.cs" />
     <Compile Include="Models\User\ChangePassword.cs" />
