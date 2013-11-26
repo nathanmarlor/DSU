@@ -10,6 +10,7 @@
     using Infrastructure.Communication.Interfaces;
     using Infrastructure.Security.Interfaces;
     using Infrastructure.Sessions.Interfaces;
+    using Infrastructure.Utilities;
     using Models;
     using Models.Deals;
     using Models.User;
@@ -28,7 +29,7 @@
         private readonly IEmailSender emailSender;
         private readonly User user;
 
-        public AccountController(ILogger log, IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IEmailSender emailSender)
+        public AccountController(ILogger log, IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IEmailSender emailSender, ICurrentUser currentUser)
         {
             this.log = log;
             this.memberDataAccess = memberDataAccess;
@@ -38,7 +39,7 @@
             this.hash = hash;
             this.emailSender = emailSender;
 
-            user = this.GetCurrentUser();
+            user = currentUser.GetCurrentUser();
         }
 
         public ActionResult LogOn()
@@ -310,28 +311,6 @@
             };
 
             return View(deal);
-        }
-
-        private User GetCurrentUser()
-        {
-            try
-            {
-                string username = sessionController.GetCurrentUsersSession().Username;
-
-                return memberDataAccess.GetUser(username);
-            }
-            catch (InvalidSessionException)
-            {
-                log.Trace("Session was retrieved but is not one we know about");
-            }
-            catch (MemberDatabaseException)
-            {
-                log.Trace("Could not retrieve current user, continuing unauthenticated");
-            }
-
-            sessionController.Logoff();
-
-            return null;
         }
     }
 }

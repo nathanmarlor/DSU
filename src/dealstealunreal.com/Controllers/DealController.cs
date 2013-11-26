@@ -9,6 +9,7 @@
     using Exceptions;
     using Infrastructure.Processing.Interfaces;
     using Infrastructure.Sessions.Interfaces;
+    using Infrastructure.Utilities;
     using Models;
     using Models.Deals;
     using Models.User;
@@ -26,7 +27,7 @@
         private readonly ISessionController sessionController;
         private readonly User user;
 
-        public DealController(ILogger log, IDealDataAccess dealDataAccess, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor, ISessionController sessionController)
+        public DealController(ILogger log, IDealDataAccess dealDataAccess, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor, ISessionController sessionController, ICurrentUser currentUser)
         {
             this.log = log;
             this.dealDataAccess = dealDataAccess;
@@ -36,7 +37,7 @@
             this.voteProcessor = voteProcessor;
             this.sessionController = sessionController;
 
-            this.user = GetCurrentUser();
+            this.user = currentUser.GetCurrentUser();
         }
 
         public ActionResult Index()
@@ -422,28 +423,6 @@
             }
 
             return View(new DealList { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
-        }
-
-        private User GetCurrentUser()
-        {
-            try
-            {
-                string username = sessionController.GetCurrentUsersSession().Username;
-
-                return memberDataAccess.GetUser(username);
-            }
-            catch (InvalidSessionException)
-            {
-                log.Trace("Session was retrieved but is not one we know about");
-            }
-            catch (MemberDatabaseException)
-            {
-                log.Trace("Could not retrieve current user, continuing unauthenticated");
-            }
-
-            sessionController.Logoff();
-
-            return null;
         }
     }
 }
