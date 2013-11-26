@@ -6,11 +6,21 @@
     using System.Net.Mail;
     using Exceptions;
     using Interfaces;
+    using Ninject.Extensions.Logging;
 
     public class EmailSender : IEmailSender
     {
+        private ILogger log;
+
+        public EmailSender(ILogger log)
+        {
+            this.log = log;
+        }
+
         public void SendEmail(string emailAddress, string subject, string body)
         {
+            log.Debug("Sending email to: {0} subject: {1} body: {2}", emailAddress, subject, body);
+
             string host = ConfigurationManager.AppSettings["SmtpHost"];
             string email = ConfigurationManager.AppSettings["SmtpAccount"];
             string password = ConfigurationManager.AppSettings["SmtpPassword"];
@@ -36,7 +46,7 @@
             }
             catch (Exception e)
             {
-                // TODO: Log
+                log.Warn(e, "Could not send email to: {0} subject: {1} body: {2}", emailAddress, subject, body);
                 throw new SendEmailException();
             }
         }
