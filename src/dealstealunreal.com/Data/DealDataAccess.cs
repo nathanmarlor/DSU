@@ -7,6 +7,7 @@
     using Exceptions;
     using Interfaces;
     using Models.Deals;
+    using Ninject.Extensions.Logging;
 
     public class DealDataAccess : IDealDataAccess
     {
@@ -17,6 +18,12 @@
         private const string SaveDescriptionQuery = "update deals set Description = @description where DealId = @dealId";
         private const string SaveActiveQuery = "update deals set Active = @active where DealId = @dealId";
         private const string DeleteDealQuery = "delete from deals where dealId = @dealId";
+        private ILogger log;
+
+        public DealDataAccess(ILogger log)
+        {
+            this.log = log;
+        }
 
         public IList<Deal> GetAllDeals()
         {
@@ -48,13 +55,9 @@
 
                 return deals;
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not load all deals");
             }
 
             throw new DealDatabaseException();
@@ -85,13 +88,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not get deal with id {0}", dealId);
             }
 
             throw new DealDatabaseException();
@@ -128,13 +127,9 @@
 
                 return deals;
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not load deal with name similar to {0}", dealName);
             }
 
             throw new DealDatabaseException();
@@ -168,13 +163,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not save deal - title: {0} description: {1} url: {2} image: {3} user: {4}", deal.Title, deal.Description, deal.Url, deal.ImageUrl, deal.UserName);
             }
         }
 
@@ -199,13 +190,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not save deal {0} description {1}", dealId, description);
             }
         }
 
@@ -230,13 +217,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not save deal {0} active {1}", dealId, active);
             }
         }
 
@@ -260,13 +243,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not delete deal {0}", dealId);
             }
         }
 

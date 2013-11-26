@@ -3,14 +3,21 @@
     using System;
     using System.Configuration;
     using System.Data.SqlClient;
-    using dealstealunreal.com.Data.Interfaces;
-    using dealstealunreal.com.Models;
+    using Interfaces;
+    using Models;
+    using Ninject.Extensions.Logging;
 
     public class VoteDataAccess : IVoteDataAccess
     {
         private const string SaveVoteQuery = "insert into votes (DealId, Username, Date, Vote) values(@dealId, @userName, @date, @vote)";
         private const string GetVoteQuery = "select sum(Vote) as SumVotes from votes where DealId = @dealId";
         private const string CanVoteQuery = "select username from votes where Username = @username and DealId = @dealId";
+        private ILogger log;
+
+        public VoteDataAccess(ILogger log)
+        {
+            this.log = log;
+        }
 
         public void AddVote(int dealId, string userName, DateTime date, Vote vote)
         {
@@ -35,13 +42,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not add vote to deal: {0} user: {1} vote: {2}", dealId, userName, vote);
             }
         }
 
@@ -71,13 +74,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not get votes for deal: {0}", dealId);
             }
 
             return 0;
@@ -107,13 +106,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not determine if a user can vote on deal: {0} user: {1}", dealId, userName);
             }
 
             return false;

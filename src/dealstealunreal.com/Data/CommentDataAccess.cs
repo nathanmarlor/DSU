@@ -4,14 +4,21 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Data.SqlClient;
-    using dealstealunreal.com.Data.Interfaces;
-    using dealstealunreal.com.Exceptions;
-    using dealstealunreal.com.Models;
+    using Exceptions;
+    using Interfaces;
+    using Models;
+    using Ninject.Extensions.Logging;
 
     public class CommentDataAccess : ICommentDataAccess
     {
         private const string GetDealCommentsQuery = "select Comments.Comment, Comments.Date, Comments.Username from Comments inner join Deals on Comments.DealId = Deals.DealId and Deals.DealId = @dealId";
         private const string SaveCommentQuery = "insert into Comments (Comment, Username, Date, DealId) values (@commentString, @userName, @date, @dealId)";
+        private readonly ILogger log;
+
+        public CommentDataAccess(ILogger log)
+        {
+            this.log = log;
+        }
 
         public void SaveDealComment(Comment comment)
         {
@@ -36,13 +43,9 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not save comment - {0} for user", comment.CommentString, comment.UserName);
             }
         }
 
@@ -81,14 +84,9 @@
 
                 return comments;
             }
-            catch (SqlException e)
-            {
-                // TODO: Log!
-                throw new CommentDatabaseException();
-            }
             catch (Exception e)
             {
-                // TODO: Log!
+                log.Warn(e, "Could not get comments for deal {0}", dealId);
                 throw new CommentDatabaseException();
             }
         }

@@ -7,6 +7,7 @@
     using Interfaces;
     using Models;
     using Models.User;
+    using Ninject.Extensions.Logging;
 
     public class MemberDataAccess : IMemberDataAccess
     {
@@ -15,6 +16,12 @@
         private const string ChangePasswordQuery = "update Users set Password = @password where Username = @userName";
         private const string UpdateUserQuery = "update Users set Email = @email, ProfilePicture = @profilePicture where Username = @userName";
         private const string AddPointsQuery = "update Users set Points = Points + @pointValue where Users.Username = @userId";
+        private ILogger log;
+
+        public MemberDataAccess(ILogger log)
+        {
+            this.log = log;
+        }
 
         public User GetUser(string userId)
         {
@@ -50,15 +57,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log this error 
-                throw new MemberDatabaseException(string.Format("Received Sql Exception when retrieving user {0} - {1}", userId, e.Message));
-            }
             catch (Exception e)
             {
-                // TODO: log this error
-                throw new MemberDatabaseException(string.Format("Received general Exception when retrieving user {0} - {1}", userId, e.Message));
+                log.Warn(e, "Could not get user with id {0}", userId);
+                throw new MemberDatabaseException();
             }
 
             throw new MemberDatabaseException(string.Format("The user {0} could not be found", userId));
@@ -87,15 +89,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log this error 
-                throw new MemberDatabaseException(string.Format("Received Sql Exception when adding user point {0} - {1}", userId, e.Message));
-            }
             catch (Exception e)
             {
-                // TODO: log this error
-                throw new MemberDatabaseException(string.Format("Received general Exception when retrieving user {0} - {1}", userId, e.Message));
+                log.Warn(e, "Could not add point to user with id {0}", userId);
+                throw new MemberDatabaseException();
             }
         }
 
@@ -123,15 +120,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log this error 
-                throw new MemberDatabaseException(string.Format("Received Sql Exception when creating user {0} - {1}", details.UserName, e.Message));
-            }
             catch (Exception e)
             {
-                // TODO: log this error
-                throw new MemberDatabaseException(string.Format("Received general Exception when retrieving user {0} - {1}", details.UserName, e.Message));
+                log.Warn(e, "Could not create user with username: {0} password: {1} email: {2}", details.UserName, details.Password, details.Email);
+                throw new MemberDatabaseException();
             }
         }
 
@@ -156,15 +148,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log this error 
-                throw new MemberDatabaseException(string.Format("Received Sql Exception when changing password of user {0} - {1}", userId, e.Message));
-            }
             catch (Exception e)
             {
-                // TODO: log this error
-                throw new MemberDatabaseException(string.Format("Received general Exception when changing password of user {0} - {1}", userId, e.Message));
+                log.Warn(e, "Could not change password for user: {0} password: {1}");
+                throw new MemberDatabaseException();
             }
         }
 
@@ -195,15 +182,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log this error 
-                throw new MemberDatabaseException(string.Format("Received Sql Exception when updating user {0} - {1}", user.UserName, e.Message));
-            }
             catch (Exception e)
             {
-                // TODO: log this error
-                throw new MemberDatabaseException(string.Format("Received general Exception when updating user {0} - {1}", user.UserName, e.Message));
+                log.Warn(e, "Could not update user: {0} profilePicture: {1} email: {2}", user.UserName, user.Email, user.ProfilePicture);
+                throw new MemberDatabaseException();
             }
         }
     }

@@ -7,6 +7,7 @@
     using Exceptions;
     using Interfaces;
     using Models.Sessions;
+    using Ninject.Extensions.Logging;
 
     public class SessionDataAccess : ISessionDataAccess
     {
@@ -14,6 +15,12 @@
         private const string DeleteSessionQuery = "delete from Sessions where SessionId = @sessionId";
         private const string UpdateSessionTimeQuery = "update Sessions set LastUpdatedTime = @lastUpdatedTime where SessionId = @sessionId";
         private const string GetAllSessionsQuery = "select * from Sessions";
+        private ILogger log;
+
+        public SessionDataAccess(ILogger log)
+        {
+            this.log = log;
+        }
 
         public void SaveSession(Session session)
         {
@@ -37,15 +44,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log exception
-                throw new SessionDatabaseException(string.Format("Received Sql Exception when saving session {0} - {1}", session.SessionId, e.Message));
-            }
             catch (Exception e)
             {
-                throw new SessionDatabaseException(string.Format("Received general Exception when saving session {0} - {1}", session.SessionId, e.Message));
-                // TODO: Log exception
+                log.Warn(e, "Could not save session to database for user: {0} rememberMe: {1}", session.Username, session.RememberMe);
+                throw new SessionDatabaseException();
             }
         }
 
@@ -68,15 +70,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log exception
-                throw new SessionDatabaseException(string.Format("Received Sql Exception when deleting session {0} - {1}", sessionId, e.Message));
-            }
             catch (Exception e)
             {
-                throw new SessionDatabaseException(string.Format("Received general Exception when deleting session {0} - {1}", sessionId, e.Message));
-                // TODO: Log exception
+                log.Warn(e, "Could not delete session from database for user: {0}", sessionId;
+                throw new SessionDatabaseException();
             }
         }
 
@@ -100,15 +97,10 @@
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                // TODO: Log exception
-                throw new SessionDatabaseException(string.Format("Received Sql Exception when updating session {0} - {1}", sessionId, e.Message));
-            }
             catch (Exception e)
             {
-                throw new SessionDatabaseException(string.Format("Received general Exception when updating session {0} - {1}", sessionId, e.Message));
-                // TODO: Log exception
+                log.Warn(e, "Could not update session time for session: {0}", sessionId);
+                throw new SessionDatabaseException();
             }
         }
 
@@ -146,15 +138,10 @@
 
                 return sessions;
             }
-            catch (SqlException e)
-            {
-                // TODO: Log exception
-                throw new SessionDatabaseException(string.Format("Received Sql Exception when retrieving all sessions - {0}", e.Message));
-            }
             catch (Exception e)
             {
-                throw new SessionDatabaseException(string.Format("Received general Exception when retrieving all sessions - {0}", e.Message));
-                // TODO: Log exception
+                log.Warn(e, "Could not return list of sessions from the database");
+                throw new SessionDatabaseException();
             }
         }
     }
