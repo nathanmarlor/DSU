@@ -182,6 +182,8 @@
         {
             if (ModelState.IsValid)
             {
+                log.Info("Received recover password request from {0}", model.UsernameOrEmail);
+
                 try
                 {
                     forgotPassword.ResetPassword(model.UsernameOrEmail);

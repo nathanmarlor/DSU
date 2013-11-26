@@ -126,7 +126,7 @@
     <Compile Include="Infrastructure\Sessions\Interfaces\ISessionController.cs" />
     <Compile Include="Infrastructure\Sessions\SessionController.cs" />
     <Compile Include="Infrastructure\Utilities\CurrentUser.cs" />
-    <Compile Include="Infrastructure\Utilities\ICurrentUser.cs" />
+    <Compile Include="Infrastructure\Utilities\Interfaces\ICurrentUser.cs" />
     <Compile Include="Models\Facebook\FacebookResponse.cs" />
     <Compile Include="Models\Sessions\Session.cs" />
     <Compile Include="Models\User\ChangePassword.cs" />

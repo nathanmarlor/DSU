@@ -14,6 +14,7 @@
 
         public CurrentUser(ILogger log, ISessionController sessionController, IMemberDataAccess memberDataAccess)
         {
+            this.log = log;
             this.sessionController = sessionController;
             this.memberDataAccess = memberDataAccess;
         }

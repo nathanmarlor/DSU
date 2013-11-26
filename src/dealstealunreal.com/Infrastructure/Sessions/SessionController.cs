@@ -18,8 +18,8 @@
         private readonly ISessionDataAccess sessionDataAccess;
         private readonly IHash hash;
         private readonly Dictionary<Guid, Session> sessions;
-        private TimeSpan timeout;
-        private ReaderWriterLockSlim locker;
+        private readonly TimeSpan timeout;
+        private readonly ReaderWriterLockSlim locker;
 
         public SessionController(IMemberDataAccess memberDataAccess, ISessionDataAccess sessionDataAccess, IHash hash, TimeSpan timeout)
         {
