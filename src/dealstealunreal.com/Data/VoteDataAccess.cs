@@ -10,9 +10,9 @@
     public class VoteDataAccess : IVoteDataAccess
     {
         private const string SaveVoteQuery = "insert into votes (DealId, Username, Date, Vote) values(@dealId, @userName, @date, @vote)";
-        private const string GetVoteQuery = "select sum(Vote) as SumVotes from votes where DealId = @dealId";
+        private const string GetVoteQuery = "select COALESCE(sum(Vote), 0) as SumVotes from votes where DealId = 6";
         private const string CanVoteQuery = "select username from votes where Username = @username and DealId = @dealId";
-        private ILogger log;
+        private readonly ILogger log;
 
         public VoteDataAccess(ILogger log)
         {

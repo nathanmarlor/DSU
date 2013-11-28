@@ -7,15 +7,18 @@
     using Exceptions;
     using Interfaces;
     using Models.User;
+    using Ninject.Extensions.Logging;
 
     public class RecoverPassword : IRecoverPassword
     {
         private readonly IMemberDataAccess memberDataAccess;
         private readonly IEmailSender emailSender;
         private readonly IHash hash;
+        private readonly ILogger log;
 
-        public RecoverPassword(IMemberDataAccess memberDataAccess, IEmailSender emailSender, IHash hash)
+        public RecoverPassword(ILogger log, IMemberDataAccess memberDataAccess, IEmailSender emailSender, IHash hash)
         {
+            this.log = log;
             this.memberDataAccess = memberDataAccess;
             this.emailSender = emailSender;
             this.hash = hash;
@@ -35,15 +38,15 @@
 
                 memberDataAccess.ChangePassword(user.UserName, hash.HashString(newPass));
             }
-            catch (MemberDatabaseException e)
+            catch (MemberDatabaseException)
             {
-                // TODO: log this error
-                throw new RecoverPasswordException(string.Format("User {0} does not exist", userId));
+                log.Debug("Invalid user specified {0} - cannot reset password", userId);
+                throw new RecoverPasswordException();
             }
-            catch (SendEmailException e)
+            catch (SendEmailException)
             {
-                // TODO: log this error
-                throw new RecoverPasswordException(string.Format("Could not send reset password email for user: {0} with email address: {1}", user.UserName, user.Email));
+                log.Debug("Error when sending reset email for user {0}", userId);
+                throw new RecoverPasswordException();
             }
         }
 

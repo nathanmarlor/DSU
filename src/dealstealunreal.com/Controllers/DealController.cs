@@ -15,6 +15,9 @@
     using Models.Wrappers;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Deal controller
+    /// </summary>
     public class DealController : Controller
     {
         private readonly ILogger log;
@@ -25,6 +28,16 @@
         private readonly IVoteProcessor voteProcessor;
         private readonly User user;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="DealController"/> class.
+        /// </summary>
+        /// <param name="log">Logging module</param>
+        /// <param name="dealDataAccess">Deal data access</param>
+        /// <param name="memberDataAccess">Member data access</param>
+        /// <param name="commentDataAccess">Comment data access</param>
+        /// <param name="voteDataAccess">Vote data access</param>
+        /// <param name="voteProcessor">Vote processor</param>
+        /// <param name="currentUser">Current user</param>
         public DealController(ILogger log, IDealDataAccess dealDataAccess, IMemberDataAccess memberDataAccess, ICommentDataAccess commentDataAccess, IVoteDataAccess voteDataAccess, IVoteProcessor voteProcessor, ICurrentUser currentUser)
         {
             this.log = log;
@@ -37,11 +50,20 @@
             this.user = currentUser.GetCurrentUser();
         }
 
+        /// <summary>
+        /// GET index
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             return View("DealProfile");
         }
 
+        /// <summary>
+        /// GET profile summary
+        /// </summary>
+        /// <param name="userId">Userid to show</param>
+        /// <returns>Action</returns>
         public ActionResult DealProfile(string userId = null)
         {
             User userFromId = null;
@@ -86,6 +108,10 @@
             return PartialView(deal);
         }
 
+        /// <summary>
+        /// GET list of deals
+        /// </summary>
+        /// <returns>Action</returns>
         public ActionResult Deals()
         {
             IEnumerable<Deal> deals = new List<Deal>();
@@ -117,11 +143,19 @@
             return PartialView(orderedDeals);
         }
 
+        /// <summary>
+        /// GET submit deal
+        /// </summary>
+        /// <returns></returns>
         public ActionResult SubmitDeal()
         {
             return PartialView();
         }
 
+        /// <summary>
+        /// POST submit deal
+        /// </summary>
+        /// <param name="deal">Deal to submit</param>
         [HttpPost]
         public void SubmitDeal(Deal deal)
         {
@@ -165,34 +199,12 @@
             }
         }
 
-        private bool UrlExists(string url)
-        {
-            HttpWebResponse response = null;
-
-            log.Trace("Checking if URL {0} exists", url);
-
-            try
-            {
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "HEAD";
-
-                response = (HttpWebResponse)request.GetResponse();
-                return true;
-            }
-            catch (Exception)
-            {
-                log.Debug("Image with URL {0} did not exist", url);
-                return false;
-            }
-            finally
-            {
-                if (response != null)
-                {
-                    response.Close();
-                }
-            }
-        }
-
+        /// <summary>
+        /// POST submit vote
+        /// </summary>
+        /// <param name="dealId">DealId to add vote to</param>
+        /// <param name="vote">Vote (+/-)</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult Voting(int dealId, Vote vote)
         {
@@ -204,6 +216,7 @@
 
                     if (user.UserName != deal.UserName)
                     {
+                        log.Debug("Adding vote: {0} to deal: {1}", vote, deal.Title);
                         voteDataAccess.AddVote(dealId, user.UserName, DateTime.Now, vote);
                         memberDataAccess.AddPoint(deal.UserName);
                     }
@@ -221,6 +234,10 @@
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// GET comments
+        /// </summary>
+        /// <returns>Action</returns>
         public ActionResult Comment()
         {
             int dealId = int.Parse(RouteData.Values["DealID"].ToString());
@@ -266,6 +283,11 @@
             return PartialView(dealComments);
         }
 
+        /// <summary>
+        /// POST add comment
+        /// </summary>
+        /// <param name="commentWrapper">Comments</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult Comment(DealComments commentWrapper)
         {
@@ -291,6 +313,12 @@
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// POST edit description
+        /// </summary>
+        /// <param name="dealId">DealId to edit</param>
+        /// <param name="dealDescriptionEdit">New description</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult EditDescription(int dealId, string dealDescriptionEdit)
         {
@@ -316,6 +344,12 @@
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// POST set deal active
+        /// </summary>
+        /// <param name="dealId">DealId to set</param>
+        /// <param name="active">Active/Inactive</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult DealActive(int dealId, bool active)
         {
@@ -325,6 +359,7 @@
                 {
                     if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
                     {
+                        log.Debug("Setting deal {0} {1}", dealId, active ? "active" : "inactive");
                         dealDataAccess.SaveDealActive(dealId, active);
                     }
                     else
@@ -342,6 +377,11 @@
             return RedirectToAction("ShowProfile", "Account");
         }
 
+        /// <summary>
+        /// POST delete deal
+        /// </summary>
+        /// <param name="dealId">DealId to delete</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult DealDelete(int dealId)
         {
@@ -351,6 +391,7 @@
                 {
                     if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
                     {
+                        log.Debug("Deleting deal: {0}", dealId);
                         dealDataAccess.DeleteDeal(dealId);
                     }
                     else
@@ -368,6 +409,10 @@
             return RedirectToAction("ShowProfile", "Account");
         }
 
+        /// <summary>
+        /// GET show top 5 deals
+        /// </summary>
+        /// <returns>Action</returns>
         public ActionResult ShowTopFive()
         {
             IList<Deal> deals = new List<Deal>();
@@ -395,6 +440,11 @@
             return PartialView(topFive);
         }
 
+        /// <summary>
+        /// Search for deals
+        /// </summary>
+        /// <param name="term">Search term</param>
+        /// <returns>Action</returns>
         public ActionResult Search(string term)
         {
             log.Trace("Searching for deal with term {0}", term);
@@ -424,6 +474,39 @@
             }
 
             return View(new DealList { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
+        }
+
+        /// <summary>
+        /// Check if a URL exists
+        /// </summary>
+        /// <param name="url">URL to check</param>
+        /// <returns>Success</returns>
+        private bool UrlExists(string url)
+        {
+            HttpWebResponse response = null;
+
+            log.Trace("Checking if URL {0} exists", url);
+
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "HEAD";
+
+                response = (HttpWebResponse)request.GetResponse();
+                return true;
+            }
+            catch (Exception)
+            {
+                log.Debug("Image with URL {0} did not exist", url);
+                return false;
+            }
+            finally
+            {
+                if (response != null)
+                {
+                    response.Close();
+                }
+            }
         }
     }
 }

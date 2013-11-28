@@ -18,6 +18,9 @@
     using Ninject.Extensions.Logging;
     using Recaptcha;
 
+    /// <summary>
+    /// Account controller
+    /// </summary>
     public class AccountController : Controller
     {
         private readonly ILogger log;
@@ -29,6 +32,17 @@
         private readonly IEmailSender emailSender;
         private readonly User user;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="AccountController"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
+        /// <param name="memberDataAccess">Member data access</param>
+        /// <param name="sessionController">Session controller</param>
+        /// <param name="forgotPassword">Forgot password</param>
+        /// <param name="dealDataAccess">Deal data access</param>
+        /// <param name="hash">Hasher</param>
+        /// <param name="emailSender">Email sender</param>
+        /// <param name="currentUser">Current user</param>
         public AccountController(ILogger log, IMemberDataAccess memberDataAccess, ISessionController sessionController, IRecoverPassword forgotPassword, IDealDataAccess dealDataAccess, IHash hash, IEmailSender emailSender, ICurrentUser currentUser)
         {
             this.log = log;
@@ -42,6 +56,10 @@
             user = currentUser.GetCurrentUser();
         }
 
+        /// <summary>
+        /// GET request to logon
+        /// </summary>
+        /// <returns>Userprofile</returns>
         public ActionResult LogOn()
         {
             if (user != null)
@@ -52,8 +70,13 @@
             return View();
         }
 
+        /// <summary>
+        /// POST request to logon
+        /// </summary>
+        /// <param name="model">Logon model</param>
+        /// <returns>User profile</returns>
         [HttpPost]
-        public ActionResult LogOn(LogOn model, string returnUrl)
+        public ActionResult LogOn(LogOn model)
         {
             if (ModelState.IsValid)
             {
@@ -67,10 +90,13 @@
                 ModelState.AddModelError("System", "The user name or password provided is incorrect.");
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
+        /// <summary>
+        /// GET request to log off
+        /// </summary>
+        /// <returns>Home</returns>
         public ActionResult LogOff()
         {
             sessionController.Logoff();
@@ -79,16 +105,24 @@
 
             FormsAuthentication.SignOut();
 
-            RedirectToAction("LogOn", "Account");
-
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// GET register
+        /// </summary>
+        /// <returns>Register page</returns>
         public ActionResult Register()
         {
             return View();
         }
 
+        /// <summary>
+        /// POST register
+        /// </summary>
+        /// <param name="model">Register model</param>
+        /// <param name="captchaValid">Captcha is valid</param>
+        /// <returns>Action</returns>
         [RecaptchaControlMvc.CaptchaValidator]
         [HttpPost]
         public ActionResult Register(Register model, bool captchaValid)
@@ -168,15 +202,23 @@
                 ModelState.AddModelError("Recaptcha", "The reCAPTCHA wasn't entered correctly. Go back and try it again!");
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
+        /// <summary>
+        /// GET recover password
+        /// </summary>
+        /// <returns></returns>
         public ActionResult RecoverPassword()
         {
             return View();
         }
 
+        /// <summary>
+        /// POST recover password
+        /// </summary>
+        /// <param name="model">Password model</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult RecoverPassword(ForgotPassword model)
         {
@@ -198,6 +240,10 @@
             return View("RecoverPasswordSuccess");
         }
 
+        /// <summary>
+        /// GET edit profile
+        /// </summary>
+        /// <returns>Action</returns>
         public ActionResult EditProfile()
         {
             if (user == null)
@@ -215,6 +261,11 @@
             return View(editProfile);
         }
 
+        /// <summary>
+        /// POST edit profile
+        /// </summary>
+        /// <param name="model">Edit Profile model</param>
+        /// <returns>Action</returns>
         [HttpPost]
         public ActionResult EditProfile(EditProfile model)
         {
@@ -224,6 +275,8 @@
                 {
                     return View("LogOn");
                 }
+
+                log.Debug("Updating profile for user: {0}", user.UserName);
 
                 user.Email = model.Email;
                 if (!string.IsNullOrWhiteSpace(model.Password))
@@ -238,7 +291,7 @@
                     string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
                     try
                     {
-                        log.Debug("Saving user: {0} profile picture with path: {1}", model.UserName, pathfile);
+                        log.Debug("Saving user: {0} profile picture with path: {1}", user.UserName, pathfile);
                         model.ProfilePicture.SaveAs(pathfile);
                         user.ProfilePicture = filename;
                     }
@@ -268,6 +321,11 @@
             return PartialView("EditProfileSuccess");
         }
 
+        /// <summary>
+        /// GET show profile
+        /// </summary>
+        /// <param name="userId">Userid to show</param>
+        /// <returns>Action</returns>
         public ActionResult ShowProfile(string userId = null)
         {
             User userFromId = null;
@@ -303,7 +361,7 @@
             List<Deal> userDeals = deals.Where(a => a.UserName.Equals(notNullUser.UserName, StringComparison.InvariantCultureIgnoreCase)).ToList();
             bool currentUser = notNullUser.UserName.Equals(user != null ? user.UserName : string.Empty, StringComparison.InvariantCultureIgnoreCase);
 
-            log.Debug("Returning {0} deals for user {1} and current user is {2}", userDeals.Count, notNullUser.UserName, currentUser);
+            log.Trace("Returning {0} deals for user {1} and current user is {2}", userDeals.Count, notNullUser.UserName, currentUser);
 
             UserDeals deal = new UserDeals
             {

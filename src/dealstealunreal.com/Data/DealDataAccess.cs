@@ -18,7 +18,7 @@
         private const string SaveDescriptionQuery = "update deals set Description = @description where DealId = @dealId";
         private const string SaveActiveQuery = "update deals set Active = @active where DealId = @dealId";
         private const string DeleteDealQuery = "delete from deals where dealId = @dealId";
-        private ILogger log;
+        private readonly ILogger log;
 
         public DealDataAccess(ILogger log)
         {

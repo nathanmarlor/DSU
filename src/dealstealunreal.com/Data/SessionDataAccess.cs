@@ -15,7 +15,7 @@
         private const string DeleteSessionQuery = "delete from Sessions where SessionId = @sessionId";
         private const string UpdateSessionTimeQuery = "update Sessions set LastUpdatedTime = @lastUpdatedTime where SessionId = @sessionId";
         private const string GetAllSessionsQuery = "select * from Sessions";
-        private ILogger log;
+        private readonly ILogger log;
 
         public SessionDataAccess(ILogger log)
         {
@@ -72,7 +72,7 @@
             }
             catch (Exception e)
             {
-                log.Warn(e, "Could not delete session from database for user: {0}", sessionId;
+                log.Warn(e, "Could not delete session from database for user: {0}", sessionId);
                 throw new SessionDatabaseException();
             }
         }

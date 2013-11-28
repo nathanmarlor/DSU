@@ -2,10 +2,10 @@
 {
     using System.IO;
     using System.Net;
-    using Newtonsoft.Json;
     using Exceptions;
     using Interfaces;
     using Models.Facebook;
+    using Newtonsoft.Json;
 
     public class FacebookAuthenticate : IFacebookAuthenticate
     {

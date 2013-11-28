@@ -14,21 +14,21 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div id="post-login" class="page type-page status-publish hentry">
+    <div id="post-login" class="page hentry">
 	    
 	    <h2 class="post-title">Login</h2>
 
 	    <div class="post-content">
 	        <p><strong></strong></p>
-            <div class="wppb_holder" id="wppb_login">		
+            <div id="wppb_login">		
 		    <% using (Html.BeginForm("LogOn","Account",FormMethod.Post,new {Class="sign-in"})) { %>
             <%: Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.") %>
-				    <p class="login-form-username">
+				    <p>
 					    <%: Html.LabelFor(m => m.UserName) %>
                         <%: Html.TextBoxFor(m => m.UserName, new { Class="text-input" })%>
                         <%: Html.ValidationMessageFor(m => m.UserName) %>
 				    </p><!-- .form-username -->
-				    <p class="login-form-password">
+				    <p>
                         <%: Html.LabelFor(m => m.Password) %>
                         <%: Html.PasswordFor(m => m.Password, new { Class = "text-input" })%>
                         <%: Html.ValidationMessageFor(m => m.Password) %>
@@ -45,11 +45,13 @@
 			
 						    <p>
 							    <strong><%: Html.ActionLink("Lost password?", "RecoverPassword", "Account")%></strong>
-						    </p><input id="login_nonce_field" name="login_nonce_field" value="d117b9cad9" type="hidden"><input name="_wp_http_referer" value="/login/" type="hidden">		<% } %><!-- .sign-in -->
-			    <div class="social_connect_ui " style="position:relative; top:81px; left:124px;">
-					    <!--<div style="margin-bottom: 3px;"><label>Connect with:</label></div>-->
-				    <div class="social_connect_form" title="Social Connect">
-							    <a href="javascript:void(0);" title="Facebook" class="social_connect_login_facebook"><img alt="Facebook" src="http://www.DealStealUnreal.com/wp-content/plugins/social-connect/media/img/facebook_wrk.png"></a>
+						    </p>		<% } %><!-- .sign-in -->
+			    <div class="social_connect_ui">
+					    <div style="margin-bottom: 3px;"><label>Connect with:</label></div>
+				    <div title="Social Connect">
+							    <a href="javascript:void(0);" title="Facebook">
+							        <img alt="Facebook" src="../images/facebook-login-button.png">
+							    </a>
 					
 		    </div>			    
     </div> <!-- End of social_connect_ui div -->

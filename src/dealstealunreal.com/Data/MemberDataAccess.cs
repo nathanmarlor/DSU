@@ -16,7 +16,7 @@
         private const string ChangePasswordQuery = "update Users set Password = @password where Username = @userName";
         private const string UpdateUserQuery = "update Users set Email = @email, ProfilePicture = @profilePicture where Username = @userName";
         private const string AddPointsQuery = "update Users set Points = Points + @pointValue where Users.Username = @userId";
-        private ILogger log;
+        private readonly ILogger log;
 
         public MemberDataAccess(ILogger log)
         {

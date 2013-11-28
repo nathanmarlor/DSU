@@ -10,10 +10,12 @@
     using Interfaces;
     using Models.Sessions;
     using Models.User;
+    using Ninject.Extensions.Logging;
     using Security.Interfaces;
 
     public class SessionController : ISessionController
     {
+        private readonly ILogger log;
         private readonly IMemberDataAccess memberDataAccess;
         private readonly ISessionDataAccess sessionDataAccess;
         private readonly IHash hash;
@@ -21,8 +23,9 @@
         private readonly TimeSpan timeout;
         private readonly ReaderWriterLockSlim locker;
 
-        public SessionController(IMemberDataAccess memberDataAccess, ISessionDataAccess sessionDataAccess, IHash hash, TimeSpan timeout)
+        public SessionController(ILogger log, IMemberDataAccess memberDataAccess, ISessionDataAccess sessionDataAccess, IHash hash, TimeSpan timeout)
         {
+            this.log = log;
             this.memberDataAccess = memberDataAccess;
             this.sessionDataAccess = sessionDataAccess;
             this.hash = hash;
@@ -35,17 +38,21 @@
         {
             User user;
 
+            log.Trace("Attempting to log on user {0} with remember me: {1}", username, rememberMe);
+
             try
             {
                 user = memberDataAccess.GetUser(username);
             }
             catch (MemberDatabaseException)
             {
+                log.Debug("Invalid user specified {0}", username);
                 return false;
             }
 
             if (hash.HashString(password) != user.Password.Trim())
             {
+                log.Warn("Passwords do not match for user {0}", username);
                 return false;
             }
 
@@ -56,6 +63,8 @@
                                       LastUpdated = DateTime.Now,
                                       RememberMe = rememberMe
                                   };
+
+            log.Trace("Setting new session cookie for user {0}", username);
 
             var cookie = FormsAuthentication.GetAuthCookie("DealStealUnreal", session.RememberMe);
 
@@ -95,6 +104,8 @@
             {
                 Guid sessionId = GetSessionId();
 
+                log.Debug("Logging off user with session id: {0}", sessionId);
+
                 sessions.Remove(sessionId);
 
                 HttpContext.Current.Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
@@ -103,7 +114,7 @@
             }
             catch (InvalidSessionException)
             {
-                // TODO: log!
+                log.Trace("Attempted to log off a user without a session");
             }
             finally
             {
@@ -129,13 +140,14 @@
 
                         if (duration > timeout && !session.Value.RememberMe)
                         {
+                            log.Info("Pruning session for user: {0}", session.Value.Username);
+
                             sessions.Remove(session.Key);
 
                             sessionDataAccess.DeleteSession(session.Key);
                         }
                     }
                 }
-
                 finally
                 {
                     locker.ExitWriteLock();
@@ -173,6 +185,7 @@
 
             if (sessions.ContainsKey(sessionGuid))
             {
+                log.Trace("Session {0} was present and valid", sessionGuid);
                 return sessionGuid;
             }
 
@@ -184,6 +197,7 @@
                 {
                     var guid = Guid.Parse(ticket.UserData);
                     HttpContext.Current.Session["sessionId"] = guid;
+                    log.Trace("Found session id from cookie: {0}", guid);
                     return guid;
                 }
             }
@@ -201,7 +215,7 @@
             }
             catch (SessionDatabaseException)
             {
-                //TODO: Log this - then keep sessions in memory
+                log.Warn("Could not load all active sessions from the database");
             }
 
             locker.EnterWriteLock();
@@ -210,6 +224,7 @@
             {
                 foreach (var session in allSessions)
                 {
+                    log.Trace("Loaded session for user: {0}", session.Username);
                     sessions.Add(session.SessionId, session);
                 }
             }

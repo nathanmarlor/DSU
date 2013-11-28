@@ -29,11 +29,11 @@
             }
             catch (InvalidSessionException)
             {
-                log.Trace("Session was retrieved but is not one we know about");
+                log.Trace("Session could not be retrieved, continuing unauthenticated");
             }
             catch (MemberDatabaseException)
             {
-                log.Trace("Could not retrieve current user, continuing unauthenticated");
+                log.Trace("Session was retrieved but the user details could not be loaded, continuing unauthenticated");
             }
 
             sessionController.Logoff();
