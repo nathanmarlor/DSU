@@ -14,8 +14,14 @@
     using Sessions.Interfaces;
     using Utilities;
 
+    /// <summary>
+    /// Ninject module
+    /// </summary>
     public class DealStealUnrealModule : NinjectModule
     {
+        /// <summary>
+        /// Load bindings
+        /// </summary>
         public override void Load()
         {
             Bind<IEmailSender>()

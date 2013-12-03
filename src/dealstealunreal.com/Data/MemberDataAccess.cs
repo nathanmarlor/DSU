@@ -9,6 +9,9 @@
     using Models.User;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Member data access
+    /// </summary>
     public class MemberDataAccess : IMemberDataAccess
     {
         private const string GetUserQuery = "select * from Users where Username = @userId or Email = @userId";
@@ -18,11 +21,20 @@
         private const string AddPointsQuery = "update Users set Points = Points + @pointValue where Users.Username = @userId";
         private readonly ILogger log;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="MemberDataAccess"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
         public MemberDataAccess(ILogger log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Get user
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <returns>User</returns>
         public User GetUser(string userId)
         {
             userId = userId ?? string.Empty;
@@ -66,6 +78,10 @@
             throw new MemberDatabaseException(string.Format("The user {0} could not be found", userId));
         }
 
+        /// <summary>
+        /// Add point to user
+        /// </summary>
+        /// <param name="userId">User id</param>
         public void AddPoint(string userId)
         {
             int pointValue = int.Parse(ConfigurationManager.AppSettings["PointPerVote"]);
@@ -96,6 +112,10 @@
             }
         }
 
+        /// <summary>
+        /// Create new user
+        /// </summary>
+        /// <param name="details">User details</param>
         public void CreateUser(Register details)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -127,6 +147,11 @@
             }
         }
 
+        /// <summary>
+        /// Change password
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <param name="password">New password</param>
         public void ChangePassword(string userId, string password)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -155,6 +180,11 @@
             }
         }
 
+
+        /// <summary>
+        /// Update user
+        /// </summary>
+        /// <param name="user">User model</param>
         public void UpdateUser(User user)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;

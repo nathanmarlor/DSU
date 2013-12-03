@@ -53,7 +53,7 @@
         /// <summary>
         /// GET index
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Action</returns>
         public ActionResult Index()
         {
             return View("DealProfile");

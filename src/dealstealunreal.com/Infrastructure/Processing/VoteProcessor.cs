@@ -3,8 +3,16 @@
     using System.Configuration;
     using Interfaces;
 
+    /// <summary>
+    /// Vote processing
+    /// </summary>
     public class VoteProcessor : IVoteProcessor
     {
+        /// <summary>
+        /// Calculate vote weighting
+        /// </summary>
+        /// <param name="votes">Deal ID</param>
+        /// <returns>Weight</returns>
         public int CalculateVote(int votes)
         {
             double dealLimit = double.Parse(ConfigurationManager.AppSettings["Deal"]);

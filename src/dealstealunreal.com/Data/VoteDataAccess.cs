@@ -7,6 +7,9 @@
     using Models;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Vote data access
+    /// </summary>
     public class VoteDataAccess : IVoteDataAccess
     {
         private const string SaveVoteQuery = "insert into votes (DealId, Username, Date, Vote) values(@dealId, @userName, @date, @vote)";
@@ -14,11 +17,22 @@
         private const string CanVoteQuery = "select username from votes where Username = @username and DealId = @dealId";
         private readonly ILogger log;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="VoteDataAccess"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
         public VoteDataAccess(ILogger log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Add vote
+        /// </summary>
+        /// <param name="dealId">Deal Id</param>
+        /// <param name="userName">Username</param>
+        /// <param name="date">Date</param>
+        /// <param name="vote">Vote</param>
         public void AddVote(int dealId, string userName, DateTime date, Vote vote)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -48,6 +62,11 @@
             }
         }
 
+        /// <summary>
+        /// Get votes
+        /// </summary>
+        /// <param name="dealId">Deal Id</param>
+        /// <returns>Number of votes</returns>
         public int GetVotes(int dealId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -82,6 +101,12 @@
             return 0;
         }
 
+        /// <summary>
+        /// Determine if a user can vote
+        /// </summary>
+        /// <param name="dealId">Deal Id</param>
+        /// <param name="userName">Username</param>
+        /// <returns>Can vote</returns>
         public bool CanVote(int dealId, string userName)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;

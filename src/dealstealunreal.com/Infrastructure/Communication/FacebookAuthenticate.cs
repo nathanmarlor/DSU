@@ -7,8 +7,17 @@
     using Models.Facebook;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// Facebook authenticator
+    /// </summary>
     public class FacebookAuthenticate : IFacebookAuthenticate
     {
+        /// <summary>
+        /// Authenticate with facebook
+        /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <param name="token">Token</param>
+        /// <returns>Response</returns>
         public FacebookResponse Authenticate(string userId, string token)
         {
             string url = string.Format("https://graph.facebook.com/{0}?method=GET&format=json&suppress_http_code=1&access_token={1}", userId, token);

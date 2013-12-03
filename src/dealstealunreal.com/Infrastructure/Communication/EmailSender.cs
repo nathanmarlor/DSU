@@ -8,15 +8,28 @@
     using Interfaces;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Email sender
+    /// </summary>
     public class EmailSender : IEmailSender
     {
-        private ILogger log;
+        private readonly ILogger log;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="EmailSender"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
         public EmailSender(ILogger log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Send email
+        /// </summary>
+        /// <param name="emailAddress">Address</param>
+        /// <param name="subject">Subject</param>
+        /// <param name="body">Body</param>
         public void SendEmail(string emailAddress, string subject, string body)
         {
             log.Debug("Sending email to: {0} subject: {1} body: {2}", emailAddress, subject, body);

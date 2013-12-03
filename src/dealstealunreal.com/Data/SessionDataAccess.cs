@@ -9,6 +9,9 @@
     using Models.Sessions;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Session data access
+    /// </summary>
     public class SessionDataAccess : ISessionDataAccess
     {
         private const string SaveSessionQuery = "IF EXISTS (Select * from Sessions where Username = @userName) UPDATE Sessions set SessionId = @sessionId, LastUpdatedTime = @lastUpdatedTime, RememberMe = @rememberMe where Username = @userName ELSE INSERT INTO Sessions (SessionId, Username, LastUpdatedTime, RememberMe) VALUES (@sessionId, @userName, @lastUpdatedTime, @rememberMe)";
@@ -17,11 +20,19 @@
         private const string GetAllSessionsQuery = "select * from Sessions";
         private readonly ILogger log;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SessionDataAccess"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
         public SessionDataAccess(ILogger log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Save session
+        /// </summary>
+        /// <param name="session">Session Id</param>
         public void SaveSession(Session session)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -51,6 +62,10 @@
             }
         }
 
+        /// <summary>
+        /// Delete session
+        /// </summary>
+        /// <param name="sessionId">Session Id</param>
         public void DeleteSession(Guid sessionId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -77,6 +92,11 @@
             }
         }
 
+        /// <summary>
+        /// Update session time
+        /// </summary>
+        /// <param name="sessionId">Session Id</param>
+        /// <param name="dateTime">Time</param>
         public void UpdateSessionTime(Guid sessionId, DateTime dateTime)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -104,6 +124,10 @@
             }
         }
 
+        /// <summary>
+        /// Get all sessions
+        /// </summary>
+        /// <returns>List of sessions</returns>
         public IList<Session> GetAllSessions()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;

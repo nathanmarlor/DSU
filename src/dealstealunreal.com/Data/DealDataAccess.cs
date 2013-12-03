@@ -9,6 +9,9 @@
     using Models.Deals;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Deal data access class
+    /// </summary>
     public class DealDataAccess : IDealDataAccess
     {
         private const string GetAllDealsQuery = "select * from Deals";
@@ -20,11 +23,19 @@
         private const string DeleteDealQuery = "delete from deals where dealId = @dealId";
         private readonly ILogger log;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="DealDataAccess"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
         public DealDataAccess(ILogger log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Get all deals
+        /// </summary>
+        /// <returns>List of deals</returns>
         public IList<Deal> GetAllDeals()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;
@@ -63,6 +74,11 @@
             throw new DealDatabaseException();
         }
 
+        /// <summary>
+        /// Get specific deal
+        /// </summary>
+        /// <param name="dealId">Deal Id</param>
+        /// <returns>Deal</returns>
         public Deal GetDeal(int dealId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;
@@ -96,6 +112,11 @@
             throw new DealDatabaseException();
         }
 
+        /// <summary>
+        /// Search for deal
+        /// </summary>
+        /// <param name="dealName">Deal name</param>
+        /// <returns>List of deals</returns>
         public IList<Deal> SearchForDeal(string dealName)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;
@@ -135,6 +156,10 @@
             throw new DealDatabaseException();
         }
 
+        /// <summary>
+        /// Save deal
+        /// </summary>
+        /// <param name="deal">Deal model</param>
         public void SaveDeal(Deal deal)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -169,6 +194,11 @@
             }
         }
 
+        /// <summary>
+        /// Save deal description
+        /// </summary>
+        /// <param name="dealId">Deal Id</param>
+        /// <param name="description">Description</param>
         public void SaveDealDescription(int dealId, string description)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -196,6 +226,11 @@
             }
         }
 
+        /// <summary>
+        /// Save deal as active/inactive
+        /// </summary>
+        /// <param name="dealId">DealId</param>
+        /// <param name="active">Active/Inactive</param>
         public void SaveDealActive(int dealId, bool active)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -223,6 +258,10 @@
             }
         }
 
+        /// <summary>
+        /// Delete deal
+        /// </summary>
+        /// <param name="dealId">Deal Id</param>
         public void DeleteDeal(int dealId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;

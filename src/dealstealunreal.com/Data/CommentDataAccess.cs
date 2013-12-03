@@ -9,17 +9,28 @@
     using Models;
     using Ninject.Extensions.Logging;
 
+    /// <summary>
+    /// Comment data access class
+    /// </summary>
     public class CommentDataAccess : ICommentDataAccess
     {
         private const string GetDealCommentsQuery = "select Comments.Comment, Comments.Date, Comments.Username from Comments inner join Deals on Comments.DealId = Deals.DealId and Deals.DealId = @dealId";
         private const string SaveCommentQuery = "insert into Comments (Comment, Username, Date, DealId) values (@commentString, @userName, @date, @dealId)";
         private readonly ILogger log;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="CommentDataAccess"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
         public CommentDataAccess(ILogger log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Save deal comment
+        /// </summary>
+        /// <param name="comment">Comment to save</param>
         public void SaveDealComment(Comment comment)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadWriteDatabase"].ConnectionString;
@@ -49,6 +60,11 @@
             }
         }
 
+        /// <summary>
+        /// Get deal comments
+        /// </summary>
+        /// <param name="dealId">DealId</param>
+        /// <returns>List of comments</returns>
         public IList<Comment> GetDealComments(int dealId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;

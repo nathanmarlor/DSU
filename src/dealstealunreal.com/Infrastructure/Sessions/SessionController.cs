@@ -13,6 +13,9 @@
     using Ninject.Extensions.Logging;
     using Security.Interfaces;
 
+    /// <summary>
+    /// Session controller
+    /// </summary>
     public class SessionController : ISessionController
     {
         private readonly ILogger log;
@@ -23,6 +26,14 @@
         private readonly TimeSpan timeout;
         private readonly ReaderWriterLockSlim locker;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SessionController"/> class. 
+        /// </summary>
+        /// <param name="log">Logging module</param>
+        /// <param name="memberDataAccess">Member data access</param>
+        /// <param name="sessionDataAccess">Session data access</param>
+        /// <param name="hash">Password hash</param>
+        /// <param name="timeout">Timeout</param>
         public SessionController(ILogger log, IMemberDataAccess memberDataAccess, ISessionDataAccess sessionDataAccess, IHash hash, TimeSpan timeout)
         {
             this.log = log;
@@ -34,6 +45,13 @@
             locker = new ReaderWriterLockSlim();
         }
 
+        /// <summary>
+        /// Logon and start a session
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="rememberMe">Remember me</param>
+        /// <returns>Success</returns>
         public bool Logon(string username, string password, bool rememberMe)
         {
             User user;
@@ -96,6 +114,9 @@
             return true;
         }
 
+        /// <summary>
+        /// Ends a session
+        /// </summary>
         public void Logoff()
         {
             locker.EnterWriteLock();
@@ -122,6 +143,9 @@
             }
         }
 
+        /// <summary>
+        /// Prunes expired sessions
+        /// </summary>
         public void PruneSessions()
         {
             this.Load();
@@ -157,6 +181,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets a current users session
+        /// </summary>
+        /// <returns>Users session</returns>
         public Session GetCurrentUsersSession()
         {
             locker.EnterReadLock();
@@ -177,6 +205,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets a session id
+        /// </summary>
+        /// <returns>GUID</returns>
         private Guid GetSessionId()
         {
             var sessionString = HttpContext.Current.Session["sessionId"] ?? Guid.Empty;
@@ -205,6 +237,9 @@
             throw new InvalidSessionException();
         }
 
+        /// <summary>
+        /// Loads all sessions from database
+        /// </summary>
         private void Load()
         {
             IList<Session> allSessions = new List<Session>();
