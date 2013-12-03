@@ -40,6 +40,9 @@
     <Reference Include="DataAnnotationsExtensions.ClientValidation">
       <HintPath>..\..\packages\DataAnnotationsExtensions.MVC3.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Facebook.6.4.2\lib\net40-client\Facebook.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -113,9 +116,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\Communication\EmailSender.cs" />
-    <Compile Include="Infrastructure\Communication\FacebookAuthenticate.cs" />
     <Compile Include="Infrastructure\Communication\Interfaces\IEmailSender.cs" />
-    <Compile Include="Infrastructure\Communication\Interfaces\IFacebookAuthenticate.cs" />
     <Compile Include="Infrastructure\DI\DealStealUnrealModule.cs" />
     <Compile Include="Infrastructure\Processing\VoteProcessor.cs" />
     <Compile Include="Infrastructure\Processing\Interfaces\IVoteProcessor.cs" />
@@ -127,14 +128,11 @@
     <Compile Include="Infrastructure\Sessions\SessionController.cs" />
     <Compile Include="Infrastructure\Utilities\CurrentUser.cs" />
     <Compile Include="Infrastructure\Utilities\Interfaces\ICurrentUser.cs" />
-    <Compile Include="Models\Facebook\FacebookResponse.cs" />
     <Compile Include="Models\Sessions\Session.cs" />
     <Compile Include="Models\User\ChangePassword.cs" />
     <Compile Include="Models\Deals\Comment.cs" />
     <Compile Include="Models\Deals\Deal.cs" />
     <Compile Include="Models\User\EditProfile.cs" />
-    <Compile Include="Models\User\EmailMessage.cs" />
-    <Compile Include="Models\User\FbLogon.cs" />
     <Compile Include="Models\User\ForgotPassword.cs" />
     <Compile Include="Models\User\LogOn.cs" />
     <Compile Include="Models\User\Register.cs" />

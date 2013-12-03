@@ -49,9 +49,11 @@
 			    <div class="social_connect_ui">
 					    <div style="margin-bottom: 3px;"><label>Connect with:</label></div>
 				    <div title="Social Connect">
-							    <a href="javascript:void(0);" title="Facebook">
-							        <img alt="Facebook" src="../images/facebook-login-button.png">
-							    </a>
+				        						<% using (Html.BeginForm("FacebookLogin","Account",FormMethod.Post,new {Class="sign-in"})) { %>
+
+				        						    <input name="submitFacebook" class="submit button" type="image" src="../images/facebook-login-button.png"/>
+ 
+                                                        <% } %>
 					
 		    </div>			    
     </div> <!-- End of social_connect_ui div -->

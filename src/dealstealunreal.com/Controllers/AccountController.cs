@@ -2,11 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Text;
     using System.Web.Mvc;
     using System.Web.Security;
     using Data.Interfaces;
     using Exceptions;
+    using Facebook;
     using Infrastructure.Communication.Interfaces;
     using Infrastructure.Security.Interfaces;
     using Infrastructure.Sessions.Interfaces;
@@ -371,6 +375,45 @@
             };
 
             return View(deal);
+        }
+
+        public ActionResult FacebookLogin(object sender, EventArgs e)
+        {
+            return new RedirectResult("https://graph.facebook.com/oauth/authorize? type=web_server& client_id=244349859058619& redirect_uri=http://localhost:4934/Account/FacebookLoginOK");
+        }
+
+        public ActionResult FacebookLoginOK(string code)
+        {
+            // parameter code is the session token
+            if (!string.IsNullOrEmpty(code))
+            {
+                const string AppId = "244349859058619";
+                const string AppSecret = "28e1ac02fec6b64ed72758984a27a879";
+
+                const string FacebookUrl = "https://graph.facebook.com/oauth/access_token?client_id={0}&redirect_uri={1}&client_secret={2}&code={3}";
+
+                const string RedirectUri = "http://localhost:4934/account/FacebookLoginOK";
+
+                WebRequest request = WebRequest.Create(string.Format(FacebookUrl, AppId, RedirectUri, AppSecret, code));
+
+                WebResponse response = request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                Encoding encode = Encoding.GetEncoding("utf-8");
+                StreamReader streamReader = new StreamReader(stream, encode);
+                string result = streamReader.ReadToEnd();
+                result = result.Remove(result.IndexOf("&expires"));
+                string accessToken = result.Replace("access_token=", string.Empty);
+                streamReader.Close();
+                response.Close();
+
+                var client = new FacebookClient(accessToken);
+
+                dynamic me = client.Get("me");
+
+                string username = me.username;
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
