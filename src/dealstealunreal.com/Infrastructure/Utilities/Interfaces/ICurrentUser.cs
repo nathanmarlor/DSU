@@ -1,6 +1,5 @@
 ﻿namespace dealstealunreal.com.Infrastructure.Utilities
 {
-    using Models.User;
 
     /// <summary>
     /// Interface for current users
@@ -11,6 +10,6 @@
         /// Gets current user
         /// </summary>
         /// <returns>User</returns>
-        User GetCurrentUser();
+        string GetCurrentUser();
     }
 }

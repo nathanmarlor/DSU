@@ -16,6 +16,8 @@
         /// <returns>Success</returns>
         bool Logon(string username, string password, bool rememberMe);
 
+        void CreateSession(string username, bool rememberMe);
+
         /// <summary>
         /// Ends a session
         /// </summary>

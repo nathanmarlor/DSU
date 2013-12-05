@@ -74,42 +74,7 @@
                 return false;
             }
 
-            Session session = new Session
-                                  {
-                                      SessionId = Guid.NewGuid(),
-                                      Username = user.UserName,
-                                      LastUpdated = DateTime.Now,
-                                      RememberMe = rememberMe
-                                  };
-
-            log.Trace("Setting new session cookie for user {0}", username);
-
-            var cookie = FormsAuthentication.GetAuthCookie("DealStealUnreal", session.RememberMe);
-
-            cookie.Expires = DateTime.Now.AddYears(10);
-
-            var ticket = FormsAuthentication.Decrypt(cookie.Value);
-
-            var newTicket = new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, session.SessionId.ToString());
-
-            cookie.Value = FormsAuthentication.Encrypt(newTicket);
-
-            HttpContext.Current.Response.Cookies.Add(cookie);
-
-            HttpContext.Current.Session["sessionId"] = session.SessionId;
-
-            sessionDataAccess.SaveSession(session);
-
-            locker.EnterWriteLock();
-
-            try
-            {
-                sessions[session.SessionId] = session;
-            }
-            finally
-            {
-                locker.ExitWriteLock();
-            }
+            this.CreateSession(username, rememberMe);
 
             return true;
         }
@@ -228,9 +193,12 @@
                 if (ticket != null)
                 {
                     var guid = Guid.Parse(ticket.UserData);
-                    HttpContext.Current.Session["sessionId"] = guid;
-                    log.Trace("Found session id from cookie: {0}", guid);
-                    return guid;
+                    if (sessions.ContainsKey(guid))
+                    {
+                        HttpContext.Current.Session["sessionId"] = guid;
+                        log.Trace("Found session id from cookie: {0}", guid);
+                        return guid;
+                    }
                 }
             }
 
@@ -266,6 +234,51 @@
             finally
             {
                 locker.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// Creates a new session for a user
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <param name="rememberMe">Persistant</param>
+        public void CreateSession(string username, bool rememberMe)
+        {
+            Session session = new Session
+            {
+                SessionId = Guid.NewGuid(),
+                Username = username,
+                LastUpdated = DateTime.Now,
+                RememberMe = rememberMe
+            };
+
+            this.log.Trace("Setting new session cookie for user {0}", username);
+
+            var cookie = FormsAuthentication.GetAuthCookie("DealStealUnreal", session.RememberMe);
+
+            cookie.Expires = DateTime.Now.AddYears(10);
+
+            var ticket = FormsAuthentication.Decrypt(cookie.Value);
+
+            var newTicket = new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, session.SessionId.ToString());
+
+            cookie.Value = FormsAuthentication.Encrypt(newTicket);
+
+            HttpContext.Current.Response.Cookies.Add(cookie);
+
+            HttpContext.Current.Session["sessionId"] = session.SessionId;
+
+            this.sessionDataAccess.SaveSession(session);
+
+            this.locker.EnterWriteLock();
+
+            try
+            {
+                this.sessions[session.SessionId] = session;
+            }
+            finally
+            {
+                this.locker.ExitWriteLock();
             }
         }
     }

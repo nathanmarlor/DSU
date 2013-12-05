@@ -106,7 +106,6 @@
     <Compile Include="Data\VoteDataAccess.cs" />
     <Compile Include="Exceptions\CommentDatabaseException.cs" />
     <Compile Include="Exceptions\DealDatabaseException.cs" />
-    <Compile Include="Exceptions\RecoverPasswordException.cs" />
     <Compile Include="Exceptions\InvalidSessionException.cs" />
     <Compile Include="Exceptions\MemberDatabaseException.cs" />
     <Compile Include="Exceptions\FacebookAuthenticationException.cs" />

@@ -35,7 +35,8 @@
         /// Reset a password
         /// </summary>
         /// <param name="userId">User ID</param>
-        public void ResetPassword(string userId)
+        /// <returns>Success</returns>
+        public bool ResetPassword(string userId)
         {
             try
             {
@@ -46,17 +47,19 @@
                 emailSender.SendEmail(user.Email, "DSU New Password", "Your new password is: " + newPass);
 
                 memberDataAccess.ChangePassword(user.UserName, hash.HashString(newPass));
+
+                return true;
             }
             catch (MemberDatabaseException)
             {
                 log.Debug("Invalid user specified {0} - cannot reset password", userId);
-                throw new RecoverPasswordException();
             }
             catch (SendEmailException)
             {
                 log.Debug("Error when sending reset email for user {0}", userId);
-                throw new RecoverPasswordException();
             }
+
+            return false;
         }
 
         /// <summary>

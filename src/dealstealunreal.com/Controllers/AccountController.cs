@@ -34,7 +34,7 @@
         private readonly IDealDataAccess dealDataAccess;
         private readonly IHash hash;
         private readonly IEmailSender emailSender;
-        private readonly User user;
+        private readonly string userName;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="AccountController"/> class. 
@@ -57,7 +57,7 @@
             this.hash = hash;
             this.emailSender = emailSender;
 
-            user = currentUser.GetCurrentUser();
+            userName = currentUser.GetCurrentUser();
         }
 
         /// <summary>
@@ -66,7 +66,7 @@
         /// <returns>Userprofile</returns>
         public ActionResult LogOn()
         {
-            if (user != null)
+            if (string.IsNullOrEmpty(userName))
             {
                 return RedirectToAction("ShowProfile", "Account");
             }
@@ -105,7 +105,7 @@
         {
             sessionController.Logoff();
 
-            log.Trace("Clearing session for user: {0}", user.UserName);
+            log.Trace("Clearing session for user: {0}", userName);
 
             FormsAuthentication.SignOut();
 
@@ -230,13 +230,11 @@
             {
                 log.Info("Received recover password request from {0}", model.UsernameOrEmail);
 
-                try
+
+                bool success = forgotPassword.ResetPassword(model.UsernameOrEmail);
+                if (!success)
                 {
-                    forgotPassword.ResetPassword(model.UsernameOrEmail);
-                }
-                catch (RecoverPasswordException e)
-                {
-                    ModelState.AddModelError("System", e.Message);
+                    ModelState.AddModelError("System", string.Format("Could not send reset password email for {0}", model.UsernameOrEmail));
                     return View(model);
                 }
             }
@@ -250,10 +248,12 @@
         /// <returns>Action</returns>
         public ActionResult EditProfile()
         {
-            if (user == null)
+            if (string.IsNullOrEmpty(userName))
             {
                 return View("LogOn");
             }
+
+            var user = memberDataAccess.GetUser(userName);
 
             EditProfile editProfile = new EditProfile()
                 {
@@ -275,14 +275,15 @@
         {
             if (ModelState.IsValid)
             {
-                if (user == null)
+                if (string.IsNullOrEmpty(userName))
                 {
                     return View("LogOn");
                 }
 
-                log.Debug("Updating profile for user: {0}", user.UserName);
+                log.Debug("Updating profile for user: {0}", userName);
 
-                user.Email = model.Email;
+                var user = new User { UserName = userName, Email = model.Email };
+
                 if (!string.IsNullOrWhiteSpace(model.Password))
                 {
                     user.Password = hash.HashString(model.Password);
@@ -295,7 +296,7 @@
                     string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
                     try
                     {
-                        log.Debug("Saving user: {0} profile picture with path: {1}", user.UserName, pathfile);
+                        log.Debug("Saving user: {0} profile picture with path: {1}", userName, pathfile);
                         model.ProfilePicture.SaveAs(pathfile);
                         user.ProfilePicture = filename;
                     }
@@ -355,21 +356,21 @@
                 log.Warn(e, "Could not load deals from the database");
             }
 
-            if (user == null && userId == null)
+            if (string.IsNullOrEmpty(userName) && userId == null)
             {
                 return PartialView("LogOn");
             }
 
-            User notNullUser = userFromId ?? user;
+            string notNullUser = userFromId == null ? userName : userFromId.UserName;
 
-            List<Deal> userDeals = deals.Where(a => a.UserName.Equals(notNullUser.UserName, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            bool currentUser = notNullUser.UserName.Equals(user != null ? user.UserName : string.Empty, StringComparison.InvariantCultureIgnoreCase);
+            List<Deal> userDeals = deals.Where(a => a.UserName.Equals(notNullUser, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            bool currentUser = notNullUser.Equals(userName, StringComparison.InvariantCultureIgnoreCase);
 
-            log.Trace("Returning {0} deals for user {1} and current user is {2}", userDeals.Count, notNullUser.UserName, currentUser);
+            log.Trace("Returning {0} deals for user {1} and current user is {2}", userDeals.Count, notNullUser, currentUser);
 
             UserDeals deal = new UserDeals
             {
-                User = notNullUser,
+                User = memberDataAccess.GetUser(notNullUser),
                 Deals = userDeals,
                 IsCurrentUser = currentUser
             };
@@ -377,11 +378,22 @@
             return View(deal);
         }
 
+        /// <summary>
+        /// Redirect to facebook auth
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Args</param>
+        /// <returns>Action</returns>
         public ActionResult FacebookLogin(object sender, EventArgs e)
         {
-            return new RedirectResult("https://graph.facebook.com/oauth/authorize? type=web_server& client_id=244349859058619& redirect_uri=http://localhost:4934/Account/FacebookLoginOK");
+            return new RedirectResult("https://graph.facebook.com/oauth/authorize? type=web_server& client_id=244349859058619&scope=email& redirect_uri=http://localhost:4934/Account/FacebookLoginOK");
         }
 
+        /// <summary>
+        /// Facebook return URL
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <returns>Action</returns>
         public ActionResult FacebookLoginOK(string code)
         {
             // parameter code is the session token
@@ -392,25 +404,51 @@
 
                 const string FacebookUrl = "https://graph.facebook.com/oauth/access_token?client_id={0}&redirect_uri={1}&client_secret={2}&code={3}";
 
-                const string RedirectUri = "http://localhost:4934/account/FacebookLoginOK";
+                const string RedirectUri = "http://localhost:4934/Account/FacebookLoginOK";
+
+                FacebookClient client;
 
                 WebRequest request = WebRequest.Create(string.Format(FacebookUrl, AppId, RedirectUri, AppSecret, code));
 
-                WebResponse response = request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                Encoding encode = Encoding.GetEncoding("utf-8");
-                StreamReader streamReader = new StreamReader(stream, encode);
-                string result = streamReader.ReadToEnd();
-                result = result.Remove(result.IndexOf("&expires"));
-                string accessToken = result.Replace("access_token=", string.Empty);
-                streamReader.Close();
-                response.Close();
+                using (WebResponse response = request.GetResponse())
+                {
+                    Stream stream = response.GetResponseStream();
+                    Encoding encode = Encoding.GetEncoding("utf-8");
+                    using (StreamReader streamReader = new StreamReader(stream, encode))
+                    {
+                        string result = streamReader.ReadToEnd();
+                        result = result.Remove(result.IndexOf("&expires", StringComparison.Ordinal));
 
-                var client = new FacebookClient(accessToken);
+                        string accessToken = result.Replace("access_token=", string.Empty);
+
+                        client = new FacebookClient(accessToken);
+                    }
+                }
 
                 dynamic me = client.Get("me");
 
-                string username = me.username;
+                try
+                {
+                    memberDataAccess.GetUser(me.name);
+                }
+                catch (MemberDatabaseException)
+                {
+                    log.Debug("Could not find user when logging in via Facebook, creating user");
+
+                    try
+                    {
+                        memberDataAccess.CreateUser(new Register { UserName = me.name, Email = me.email, Password = "test", ConfirmPassword = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
+                    }
+                    catch (MemberDatabaseException)
+                    {
+                        log.Warn("Could not register new user when logging in through Facebook");
+                        return RedirectToAction("Deals", "Deal");
+                    }
+                }
+
+                sessionController.CreateSession(me.name, true);
+
+                forgotPassword.ResetPassword(me.name);
             }
 
             return RedirectToAction("Index", "Home");

@@ -9,6 +9,7 @@
         /// Reset a password
         /// </summary>
         /// <param name="userId">User ID</param>
-        void ResetPassword(string userId);
+        /// <returns>Success</returns>
+        bool ResetPassword(string userId);
     }
 }

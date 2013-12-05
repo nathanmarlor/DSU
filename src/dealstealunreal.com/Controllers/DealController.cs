@@ -26,7 +26,7 @@
         private readonly ICommentDataAccess commentDataAccess;
         private readonly IVoteDataAccess voteDataAccess;
         private readonly IVoteProcessor voteProcessor;
-        private readonly User user;
+        private readonly string userName;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DealController"/> class.
@@ -47,7 +47,7 @@
             this.voteDataAccess = voteDataAccess;
             this.voteProcessor = voteProcessor;
 
-            this.user = currentUser.GetCurrentUser();
+            this.userName = currentUser.GetCurrentUser();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@
                 }
             }
 
-            if (user == null && userFromId == null)
+            if (string.IsNullOrEmpty(userName) && userFromId == null)
             {
                 return View("DealProfileUserControl");
             }
@@ -96,13 +96,13 @@
                 log.Warn("Could not get list of deals for user profile");
             }
 
-            User notNullUser = userFromId ?? this.user;
+            string notNullUser = userFromId == null ? this.userName : userFromId.UserName;
 
             UserDeals deal = new UserDeals
                 {
-                    User = notNullUser,
-                    Deals = userDeals.Where(a => a.UserName.Equals(notNullUser.UserName)).ToList(),
-                    IsCurrentUser = notNullUser.UserName.Equals(user != null ? user.UserName : string.Empty)
+                    User = memberDataAccess.GetUser(notNullUser),
+                    Deals = userDeals.Where(a => a.UserName.Equals(notNullUser)).ToList(),
+                    IsCurrentUser = notNullUser.Equals(userName)
                 };
 
             return PartialView(deal);
@@ -124,7 +124,7 @@
                 {
                     int votes = voteDataAccess.GetVotes(deal.DealID);
                     deal.Votes = voteProcessor.CalculateVote(votes);
-                    deal.CanVote = voteDataAccess.CanVote(deal.DealID, user == null ? string.Empty : user.UserName);
+                    deal.CanVote = voteDataAccess.CanVote(deal.DealID, userName);
 
                     log.Trace("Found {0} votes for deal {1} - Current user can vote {2}", votes, deal.Title, deal.CanVote);
                 }
@@ -137,7 +137,7 @@
             OrderedDeals orderedDeals = new OrderedDeals
                 {
                     Deals = deals.Where(a => a.Active).OrderByDescending(a => a.Date),
-                    CurrentUsername = user == null ? string.Empty : user.UserName,
+                    CurrentUsername = userName
                 };
 
             return PartialView(orderedDeals);
@@ -161,11 +161,11 @@
         {
             if (ModelState.IsValid)
             {
-                deal.UserName = user.UserName;
+                deal.UserName = userName;
 
                 if (!string.IsNullOrEmpty(deal.ImageUrl) && !(this.UrlExists(deal.ImageUrl) || deal.ImageUrl.EndsWith(".jpg") || deal.ImageUrl.EndsWith(".png")))
                 {
-                    log.Debug("The URL {0} specified by {1} is invalid", deal.Url, user.UserName);
+                    log.Debug("The URL {0} specified by {1} is invalid", deal.Url, userName);
                     ModelState.AddModelError("Image URL", "The image URL specified is not valid");
                 }
                 else
@@ -194,7 +194,7 @@
                 Response.Clear();
                 Response.StatusCode = 500;
                 var error = ModelState.Values.First(a => a.Errors.Any()).Errors.First().ErrorMessage;
-                log.Debug("Returning error {0} for deal submission from user {1}", error, user.UserName);
+                log.Debug("Returning error {0} for deal submission from user {1}", error, userName);
                 Response.Write(error);
             }
         }
@@ -214,15 +214,15 @@
                 {
                     Deal deal = dealDataAccess.GetDeal(dealId);
 
-                    if (user.UserName != deal.UserName)
+                    if (userName != deal.UserName)
                     {
                         log.Debug("Adding vote: {0} to deal: {1}", vote, deal.Title);
-                        voteDataAccess.AddVote(dealId, user.UserName, DateTime.Now, vote);
+                        voteDataAccess.AddVote(dealId, userName, DateTime.Now, vote);
                         memberDataAccess.AddPoint(deal.UserName);
                     }
                     else
                     {
-                        log.Warn("Attempt to vote for own deal {0} received from user {1}", dealId, user.UserName);
+                        log.Warn("Attempt to vote for own deal {0} received from user {1}", dealId, userName);
                     }
                 }
                 catch (DealDatabaseException)
@@ -277,7 +277,7 @@
                 {
                     Comments = userComments.OrderByDescending(a => a.Value.Date),
                     Deal = deal,
-                    CurrentUsername = user == null ? string.Empty : user.UserName
+                    CurrentUsername = userName
                 };
 
             return PartialView(dealComments);
@@ -296,10 +296,10 @@
                                       CommentString = commentWrapper.NewComment,
                                       Date = DateTime.Now,
                                       DealId = commentWrapper.Deal.DealID,
-                                      UserName = user.UserName
+                                      UserName = userName
                                   };
 
-            log.Trace("Saving comment {0} for deal {1} from user {2}", commentWrapper.NewComment, commentWrapper.Deal.Title, user.UserName);
+            log.Trace("Saving comment {0} for deal {1} from user {2}", commentWrapper.NewComment, commentWrapper.Deal.Title, userName);
 
             try
             {
@@ -326,13 +326,13 @@
             {
                 try
                 {
-                    if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
+                    if (userName == dealDataAccess.GetDeal(dealId).UserName)
                     {
                         dealDataAccess.SaveDealDescription(dealId, dealDescriptionEdit);
                     }
                     else
                     {
-                        log.Warn("Attempt to edit description of other users deal received for deal {0} with user {1}", dealId, user.UserName);
+                        log.Warn("Attempt to edit description of other users deal received for deal {0} with user {1}", dealId, userName);
                     }
                 }
                 catch (DealDatabaseException)
@@ -357,14 +357,14 @@
             {
                 try
                 {
-                    if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
+                    if (userName == dealDataAccess.GetDeal(dealId).UserName)
                     {
                         log.Debug("Setting deal {0} {1}", dealId, active ? "active" : "inactive");
                         dealDataAccess.SaveDealActive(dealId, active);
                     }
                     else
                     {
-                        log.Warn("Attempt to set other users deal {0} received from {1}", active ? "active" : "inactive", user.UserName);
+                        log.Warn("Attempt to set other users deal {0} received from {1}", active ? "active" : "inactive", userName);
                     }
                 }
                 catch (DealDatabaseException)
@@ -389,14 +389,14 @@
             {
                 try
                 {
-                    if (user.UserName == dealDataAccess.GetDeal(dealId).UserName)
+                    if (userName == dealDataAccess.GetDeal(dealId).UserName)
                     {
                         log.Debug("Deleting deal: {0}", dealId);
                         dealDataAccess.DeleteDeal(dealId);
                     }
                     else
                     {
-                        log.Warn("Attempt to delete other users deal {0} received from user {1}", dealId, user.UserName);
+                        log.Warn("Attempt to delete other users deal {0} received from user {1}", dealId, userName);
                     }
                 }
                 catch (DealDatabaseException)
@@ -469,11 +469,11 @@
             {
                 int votes = voteDataAccess.GetVotes(deal.DealID);
                 deal.Votes = voteProcessor.CalculateVote(votes);
-                deal.CanVote = voteDataAccess.CanVote(deal.DealID, user == null ? string.Empty : user.UserName);
+                deal.CanVote = voteDataAccess.CanVote(deal.DealID, userName);
                 log.Debug("Found {0} votes for deal {1} - Current user can vote {2}", votes, deal.Title, deal.CanVote);
             }
 
-            return View(new DealList { Deals = deals, CurrentUsername = user == null ? string.Empty : user.UserName });
+            return View(new DealList { Deals = deals, CurrentUsername = userName });
         }
 
         /// <summary>

@@ -2,7 +2,6 @@
 {
     using Data.Interfaces;
     using Exceptions;
-    using Models.User;
     using Ninject.Extensions.Logging;
     using Sessions.Interfaces;
 
@@ -32,26 +31,20 @@
         /// Gets current user
         /// </summary>
         /// <returns>User</returns>
-        public User GetCurrentUser()
+        public string GetCurrentUser()
         {
             try
             {
-                string username = sessionController.GetCurrentUsersSession().Username;
-
-                return memberDataAccess.GetUser(username);
+                return sessionController.GetCurrentUsersSession().Username;
             }
             catch (InvalidSessionException)
             {
                 log.Trace("Session could not be retrieved, continuing unauthenticated");
             }
-            catch (MemberDatabaseException)
-            {
-                log.Trace("Session was retrieved but the user details could not be loaded, continuing unauthenticated");
-            }
 
             sessionController.Logoff();
 
-            return null;
+            return string.Empty;
         }
     }
 }

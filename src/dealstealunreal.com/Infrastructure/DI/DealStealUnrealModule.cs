@@ -27,9 +27,6 @@
             Bind<IEmailSender>()
                 .To<EmailSender>();
 
-            Bind<IFacebookAuthenticate>()
-                .To<FacebookAuthenticate>();
-
             Bind<IVoteProcessor>()
                 .To<VoteProcessor>();
 
