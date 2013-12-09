@@ -429,7 +429,9 @@
 
                 try
                 {
-                    memberDataAccess.GetFacebookUser(int.Parse(me.id));
+                    var user = memberDataAccess.GetFacebookUser(int.Parse(me.id));
+
+                    sessionController.CreateSession(user.UserName, true);
                 }
                 catch (MemberDatabaseException)
                 {
@@ -437,9 +439,15 @@
 
                     try
                     {
-                        memberDataAccess.CreateUser(new Register { FacebookId = int.Parse(me.id), UserName = me.name, Email = me.email, Password = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
+                        Random random = new Random();
 
-                        forgotPassword.ResetPassword(me.name);
+                        string username = "user" + random.Next();
+
+                        memberDataAccess.CreateUser(new Register { FacebookId = int.Parse(me.id), UserName = username, Email = me.email, Password = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
+
+                        sessionController.CreateSession(username, true);
+
+                        forgotPassword.ResetPassword(username);
                     }
                     catch (MemberDatabaseException)
                     {
@@ -447,8 +455,6 @@
                         return RedirectToAction("Deals", "Deal");
                     }
                 }
-
-                sessionController.CreateSession(me.name, true);
             }
 
             return RedirectToAction("Index", "Home");
