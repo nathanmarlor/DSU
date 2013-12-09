@@ -429,7 +429,7 @@
 
                 try
                 {
-                    memberDataAccess.GetUser(me.name);
+                    memberDataAccess.GetFacebookUser(int.Parse(me.id));
                 }
                 catch (MemberDatabaseException)
                 {
@@ -437,7 +437,9 @@
 
                     try
                     {
-                        memberDataAccess.CreateUser(new Register { UserName = me.name, Email = me.email, Password = "test", ConfirmPassword = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
+                        memberDataAccess.CreateUser(new Register { FacebookId = int.Parse(me.id), UserName = me.name, Email = me.email, Password = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
+
+                        forgotPassword.ResetPassword(me.name);
                     }
                     catch (MemberDatabaseException)
                     {
@@ -447,8 +449,6 @@
                 }
 
                 sessionController.CreateSession(me.name, true);
-
-                forgotPassword.ResetPassword(me.name);
             }
 
             return RedirectToAction("Index", "Home");

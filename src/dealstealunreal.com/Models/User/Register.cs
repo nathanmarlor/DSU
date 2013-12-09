@@ -50,5 +50,10 @@
         /// Path
         /// </summary>
         public string ProfilePicturePath { get; set; }
+
+        /// <summary>
+        /// Facebook ID
+        /// </summary>
+        public int FacebookId { get; set; }
     }
 }

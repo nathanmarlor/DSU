@@ -15,7 +15,8 @@
     public class MemberDataAccess : IMemberDataAccess
     {
         private const string GetUserQuery = "select * from Users where Username = @userId or Email = @userId";
-        private const string SaveUserQuery = "insert into Users (Username, Password, Email, ProfilePicture, Points) values(@userName, @password, @email, @profilePicture, @points)";
+        private const string GetFacebookUserQuery = "select * from Users where FacebookId = @id";
+        private const string SaveUserQuery = "insert into Users (Username, Password, Email, ProfilePicture, Points, FacebookId) values(@userName, @password, @email, @profilePicture, @points, @facebookId)";
         private const string ChangePasswordQuery = "update Users set Password = @password where Username = @userName";
         private const string UpdateUserQuery = "update Users set Email = @email, ProfilePicture = @profilePicture where Username = @userName";
         private const string AddPointsQuery = "update Users set Points = Points + @pointValue where Users.Username = @userId";
@@ -79,6 +80,52 @@
         }
 
         /// <summary>
+        /// Get Facebook user
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns>User</returns>
+        public User GetFacebookUser(int id)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = GetFacebookUserQuery;
+                        command.Parameters.AddWithValue("@id", id);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new User
+                                {
+                                    UserName = reader.GetString(reader.GetOrdinal("Username")).Trim(),
+                                    Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
+                                    Password = reader.GetString(reader.GetOrdinal("Password")).Trim(),
+                                    Points = reader.GetInt32(reader.GetOrdinal("Points")),
+                                    ProfilePicture = reader.GetString(reader.GetOrdinal("ProfilePicture"))
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Warn(e, "Could not get facebook user with id {0}", id);
+                throw new MemberDatabaseException();
+            }
+
+            throw new MemberDatabaseException(string.Format("The user {0} could not be found", id));
+        }
+
+        /// <summary>
         /// Add point to user
         /// </summary>
         /// <param name="userId">User id</param>
@@ -135,6 +182,7 @@
                         command.Parameters.AddWithValue("@userName", details.UserName);
                         command.Parameters.AddWithValue("@profilePicture", details.ProfilePicturePath);
                         command.Parameters.AddWithValue("@points", 0);
+                        command.Parameters.AddWithValue("@facebookId", details.FacebookId);
 
                         command.ExecuteNonQuery();
                     }

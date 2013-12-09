@@ -16,6 +16,12 @@
         User GetUser(string userId);
 
         /// <summary>
+        /// Gets a facebook user
+        /// </summary>
+        /// <param name="id">ID</param>
+        User GetFacebookUser(int id);
+
+        /// <summary>
         /// Add point to user
         /// </summary>
         /// <param name="userId">User id</param>

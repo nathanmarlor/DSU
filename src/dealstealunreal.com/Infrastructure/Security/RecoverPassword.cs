@@ -44,9 +44,9 @@
 
                 string newPass = GenerateRandomString();
 
-                emailSender.SendEmail(user.Email, "DSU New Password", "Your new password is: " + newPass);
-
                 memberDataAccess.ChangePassword(user.UserName, hash.HashString(newPass));
+
+                emailSender.SendEmail(user.Email, "DSU New Password", "Your new password is: " + newPass);
 
                 return true;
             }
