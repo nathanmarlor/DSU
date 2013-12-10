@@ -346,7 +346,7 @@
         /// <returns>Action</returns>
         public ActionResult FacebookLogin(object sender, EventArgs e)
         {
-            return new RedirectResult("https://graph.facebook.com/oauth/authorize? type=web_server& client_id=244349859058619&scope=email& redirect_uri=http://localhost:4934/Account/FacebookLoginOK");
+            return new RedirectResult("https://graph.facebook.com/oauth/authorize? type=web_server& client_id=244349859058619&scope=email& redirect_uri=http://www.dealstealunreal.com/Account/FacebookLoginOK");
         }
 
         /// <summary>
@@ -364,7 +364,7 @@
 
                 const string FacebookUrl = "https://graph.facebook.com/oauth/access_token?client_id={0}&redirect_uri={1}&client_secret={2}&code={3}";
 
-                const string RedirectUri = "http://localhost:4934/Account/FacebookLoginOK";
+                const string RedirectUri = "http://www.dealstealunreal.com/Account/FacebookLoginOK";
 
                 FacebookClient client;
 

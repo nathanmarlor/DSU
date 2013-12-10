@@ -14,7 +14,7 @@
 
     public class MvcApplication : NinjectHttpApplication
     {
-        private const string ConfigPath = @"C:\Users\Nathan\DSU\config\dsu.log4net.config";
+        private const string ConfigPath = @"e:\web\dealstealun\htdocs\config\dsu.log4net.config";
 
         private ILogger log;
 

@@ -12,19 +12,16 @@
     {
         private readonly ILogger log;
         private readonly ISessionController sessionController;
-        private readonly IMemberDataAccess memberDataAccess;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="CurrentUser"/> class. 
         /// </summary>
         /// <param name="log">Logging module</param>
         /// <param name="sessionController">Session controller</param>
-        /// <param name="memberDataAccess">Member data access</param>
-        public CurrentUser(ILogger log, ISessionController sessionController, IMemberDataAccess memberDataAccess)
+        public CurrentUser(ILogger log, ISessionController sessionController)
         {
             this.log = log;
             this.sessionController = sessionController;
-            this.memberDataAccess = memberDataAccess;
         }
 
         /// <summary>
@@ -41,8 +38,6 @@
             {
                 log.Trace("Session could not be retrieved, continuing unauthenticated");
             }
-
-            sessionController.Logoff();
 
             return string.Empty;
         }
