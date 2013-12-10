@@ -447,6 +447,8 @@
         /// <returns>Action</returns>
         public ActionResult Search(string term)
         {
+            ViewData["term"] = term;
+
             log.Trace("Searching for deal with term {0}", term);
 
             if (term.Equals(string.Empty))

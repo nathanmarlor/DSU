@@ -24,58 +24,42 @@
         <%} %>
         <% foreach (var deal in Model.Deals)
            { %>
-        <div class="post-<%:deal.DealID %> post type-post status-publish format-standard hentry deals-steal"
-            id="post-<%:deal.DealID %>">
-            <% if (!Model.CurrentUsername.Equals(deal.UserName))
-               { %>
+        <div class="post-<%:deal.DealID %> post type-post status-publish format-standard hentry deals-steal" id="post-<%:deal.DealID %>">
             <div class="deal_bt">
                 <% if (Request.IsAuthenticated)
                    {
-                       if (deal.Votes == 0)
+                       if (deal.UserName != Model.CurrentUsername && deal.CanVote)
                        { %>
                 <div class="neg_deal">
                     <% using (Html.BeginForm("Voting", "Deal", FormMethod.Post))
                        { %>
-                    <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.NegativeVote)%>
-                    <%: Html.Hidden("DealID", deal.DealID)%>
+                    <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.NegativeVote) %>
+                    <%: Html.Hidden("dealId", deal.DealID) %>
                     <input type="submit" class="no_deal" name="no_deal_x" />
                     <% } %>
                 </div>
-                <div class="pos_deal">
+                <div class="pos_deal" onclick="window.open('<%: deal.Url %>')">
                     <% using (Html.BeginForm("Voting", "Deal", FormMethod.Post))
                        { %>
-                    <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.PositiveVote)%>
-                    <%: Html.Hidden("DealID", deal.DealID)%>
+                    <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.PositiveVote) %>
+                    <%: Html.Hidden("dealId", deal.DealID) %>
                     <input type="submit" class="deal" name="deal_x" />
                     <% } %>
                 </div>
                 <% }
-                       else
-                       {
-                %><div class="deal_bt">
-                    <div class="neg_deal">
-                        <span class="no_deal"></span>
-                    </div>
-                    <div class="pos_deal">
-                        <span class="deal"></span>
-                    </div>
-                </div>
-                <%
-           }
                    }
                    else
                    { %>
                 <div class="neg_deal">
-                    <a class="no_deal" onclick="loginFirst('<%: Url.Action("LogOn","Account") %>','Please log in to vote.')"
+                    <a class="no_deal" onclick="loginFirst('<%: Url.Action("LogOn", "Account") %>','Please log in to vote.')"
                         href="javascript:void(0);"></a>
                 </div>
                 <div class="pos_deal">
-                    <a class="deal" onclick="loginFirst('<%: Url.Action("LogOn","Account") %>','Please log in to vote.')"
+                    <a class="deal" onclick="loginFirst('<%: Url.Action("LogOn", "Account") %>','Please log in to vote.')"
                         href="javascript:void(0);"></a>
                 </div>
                 <% } %>
             </div>
-            <% } %>
             <h2 class="deal-title">
                 <a target="_blank" href="<%: deal.Url %>">
                     <%: deal.Title %>- <b>£<%: deal.Price %></b> @
@@ -149,7 +133,11 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="CustomHeader" runat="server">
     <style type="text/css">
-        .deal_profile {display:none;visibility:hidden;}
+        .deal_profile
+        {
+            display: none;
+            visibility: hidden;
+        }
     </style>
     <script type="text/javascript" src="<%=Url.Content("~/js/validate.js") %>"></script>
 </asp:Content>
