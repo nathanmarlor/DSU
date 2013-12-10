@@ -439,9 +439,13 @@
 
                     try
                     {
-                        Random random = new Random();
+                        string username = me.first_name + " " + me.last_name;
+                        int i = 1;
 
-                        string username = "user" + random.Next();
+                        while (this.UserExists(username))
+                        {
+                            username = me.first_name + " " + me.last_name + " " + i++;
+                        }
 
                         memberDataAccess.CreateUser(new Register { FacebookId = int.Parse(me.id), UserName = username, Email = me.email, Password = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
 
@@ -458,6 +462,29 @@
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// Checks if a user exists
+        /// </summary>
+        /// <param name="name">Name to check</param>
+        /// <returns>Exists</returns>
+        private bool UserExists(string name)
+        {
+            log.Debug("Checking if user {0} exists", name);
+
+            try
+            {
+                memberDataAccess.GetUser(name);
+
+                return true;
+            }
+            catch (MemberDatabaseException)
+            {
+                log.Debug("User {0} does not exist", name);
+            }
+
+            return false;
         }
     }
 }
