@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Net;
     using System.Text;
+    using System.Web;
     using System.Web.Mvc;
     using System.Web.Security;
     using Data.Interfaces;
@@ -157,30 +158,7 @@
 
                     model.Password = hash.HashString(model.Password);
 
-                    if (model.ProfilePicture != null)
-                    {
-                        // save avatar
-                        string filename = Guid.NewGuid() + model.ProfilePicture.FileName;
-                        string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
-
-                        log.Debug("Saving user: {0} profile picture with path: {1}", model.UserName, pathfile);
-
-                        try
-                        {
-                            model.ProfilePicture.SaveAs(pathfile);
-                        }
-                        catch (Exception e)
-                        {
-                            log.Warn(e, "Could not save users: {0} profile picture with path: {1}", model.UserName, pathfile);
-                        }
-
-                        model.ProfilePicturePath = "~/uploads/avatars/" + filename;
-                    }
-                    else
-                    {
-                        log.Trace("Setting profile picture to default for user: {0}", model.UserName);
-                        model.ProfilePicturePath = "~/images/default_user_profile.jpg";
-                    }
+                    model.ProfilePicturePath = this.SaveImage(model.ProfilePicture);
 
                     memberDataAccess.CreateUser(model);
 
@@ -289,26 +267,8 @@
                     user.Password = hash.HashString(model.Password);
                 }
 
-                if (model.ProfilePicture != null)
-                {
-                    // save avatar
-                    string filename = Guid.NewGuid() + model.ProfilePicture.FileName;
-                    string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
-                    try
-                    {
-                        log.Debug("Saving user: {0} profile picture with path: {1}", userName, pathfile);
-                        model.ProfilePicture.SaveAs(pathfile);
-                        user.ProfilePicture = filename;
-                    }
-                    catch (Exception e)
-                    {
-                        log.Warn(e, "Could not save users: {0} profile picture with path: {1}", model.UserName, pathfile);
-                    }
+                user.ProfilePicture = this.SaveImage(model.ProfilePicture);
 
-                    user.ProfilePicture = "~/uploads/avatars/" + user.ProfilePicture;
-                }
-
-                model.ProfilePicturePath = user.ProfilePicture;
                 model.UserName = user.UserName;
 
                 try
@@ -485,6 +445,35 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Saves a users image
+        /// </summary>
+        /// <param name="file">File</param>
+        /// <returns>File location</returns>
+        private string SaveImage(HttpPostedFileBase file)
+        {
+            if (file != null && (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png")))
+            {
+                // save avatar
+                string filename = Guid.NewGuid() + file.FileName;
+                string pathfile = AppDomain.CurrentDomain.BaseDirectory + "uploads/avatars/" + filename;
+                try
+                {
+                    this.log.Debug("Saving user: {0} profile picture with path: {1}", this.userName, pathfile);
+
+                    file.SaveAs(pathfile);
+
+                    return "~/uploads/avatars/" + filename;
+                }
+                catch (Exception e)
+                {
+                    this.log.Warn(e, "Could not save profile picture with path: {0}", pathfile);
+                }
+            }
+
+            return "~/images/default_user_profile.jpg";
         }
     }
 }
