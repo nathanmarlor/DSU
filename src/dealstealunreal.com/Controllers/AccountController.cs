@@ -389,7 +389,7 @@
 
                 try
                 {
-                    var user = memberDataAccess.GetFacebookUser(int.Parse(me.id));
+                    var user = memberDataAccess.GetFacebookUser(long.Parse(me.id));
 
                     sessionController.CreateSession(user.UserName, true);
                 }
@@ -407,7 +407,7 @@
                             username = me.first_name + " " + me.last_name + " " + i++;
                         }
 
-                        memberDataAccess.CreateUser(new Register { FacebookId = int.Parse(me.id), UserName = username, Email = me.email, Password = "test", ProfilePicturePath = "~/images/default_user_profile.jpg" });
+                        memberDataAccess.CreateUser(new Register { FacebookId = long.Parse(me.id), UserName = username, Email = me.email, Password = "dealstealunreal", ProfilePicturePath = "~/images/default_user_profile.jpg" });
 
                         sessionController.CreateSession(username, true);
 

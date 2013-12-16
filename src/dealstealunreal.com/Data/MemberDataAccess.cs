@@ -84,7 +84,7 @@
         /// </summary>
         /// <param name="id">User id</param>
         /// <returns>User</returns>
-        public User GetFacebookUser(int id)
+        public User GetFacebookUser(long id)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ReadonlyDatabase"].ConnectionString;
 

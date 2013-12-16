@@ -19,7 +19,7 @@
         /// Gets a facebook user
         /// </summary>
         /// <param name="id">ID</param>
-        User GetFacebookUser(int id);
+        User GetFacebookUser(long id);
 
         /// <summary>
         /// Add point to user
