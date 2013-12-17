@@ -54,6 +54,6 @@
         /// <summary>
         /// Facebook ID
         /// </summary>
-        public int FacebookId { get; set; }
+        public long FacebookId { get; set; }
     }
 }
