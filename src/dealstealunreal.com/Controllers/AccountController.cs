@@ -331,7 +331,7 @@
             UserDeals deal = new UserDeals
             {
                 User = memberDataAccess.GetUser(notNullUser),
-                Deals = userDeals,
+                Deals = userDeals.OrderByDescending(a => a.Date),
                 IsCurrentUser = currentUser
             };
 

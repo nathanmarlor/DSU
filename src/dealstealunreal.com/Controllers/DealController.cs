@@ -101,7 +101,7 @@
             UserDeals deal = new UserDeals
                 {
                     User = memberDataAccess.GetUser(notNullUser),
-                    Deals = userDeals.Where(a => a.UserName.Equals(notNullUser)).ToList(),
+                    Deals = userDeals.Where(a => a.UserName.Equals(notNullUser)).OrderByDescending(a => a.Date),
                     IsCurrentUser = notNullUser.Equals(userName)
                 };
 

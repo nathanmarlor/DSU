@@ -1,4 +1,6 @@
-﻿namespace dealstealunreal.com.Models.Wrappers
+﻿using System.Linq;
+
+namespace dealstealunreal.com.Models.Wrappers
 {
     using System.Collections.Generic;
     using Deals;
@@ -17,7 +19,7 @@
         /// <summary>
         /// Deals
         /// </summary>
-        public IList<Deal> Deals { get; set; }
+        public IOrderedEnumerable<Deal> Deals { get; set; }
 
         /// <summary>
         /// Is current user

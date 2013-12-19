@@ -3,7 +3,7 @@
 <div class="deal_profile">
     <div class="left"> 
         <div class="d_username"><%:Model.User.UserName %></div> 
-        <div class="deal_posted">Deals Posted:  <%:Model.Deals.Count %></div> 
+        <div class="deal_posted">Deals Posted:  <%:Model.Deals.Count() %></div> 
         <% if (Model.IsCurrentUser)
            { %>
         <div class="points">Points:  <%:Model.User.Points%></div>
