@@ -113,8 +113,6 @@
         /// </summary>
         public void PruneSessions()
         {
-            this.Load();
-
             while (true)
             {
                 locker.EnterWriteLock();
@@ -208,7 +206,7 @@
         /// <summary>
         /// Loads all sessions from database
         /// </summary>
-        private void Load()
+        public void Load()
         {
             IList<Session> allSessions = new List<Session>();
 
@@ -252,7 +250,7 @@
                 RememberMe = rememberMe
             };
 
-            this.log.Trace("Setting new session cookie for user {0}", username);
+            this.log.Debug("Setting new session cookie for user {0}", username);
 
             var cookie = FormsAuthentication.GetAuthCookie("DealStealUnreal", session.RememberMe);
 

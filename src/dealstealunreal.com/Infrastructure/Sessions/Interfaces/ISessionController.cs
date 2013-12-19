@@ -18,6 +18,8 @@
 
         void CreateSession(string username, bool rememberMe);
 
+        void Load();
+
         /// <summary>
         /// Ends a session
         /// </summary>

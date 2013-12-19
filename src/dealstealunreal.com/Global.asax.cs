@@ -49,7 +49,16 @@
 
             this.log.Info("Successfully initialised dependency injection");
 
-            Thread pruneThread = new Thread(kernel.Get<ISessionController>().PruneSessions) { IsBackground = true };
+            ISessionController controller = kernel.Get<ISessionController>();
+
+            this.log.Info("Loading all sessions from database");
+
+            controller.Load();
+
+            this.log.Info("Starting prune sessions thread");
+
+            Thread pruneThread = new Thread(controller.PruneSessions) { IsBackground = true };
+
             pruneThread.Start();
 
             return kernel;
