@@ -22,6 +22,7 @@
     using Models.Wrappers;
     using Ninject.Extensions.Logging;
     using Recaptcha;
+    using System.Diagnostics;
 
     /// <summary>
     /// Account controller
@@ -454,7 +455,7 @@
         /// <returns>File location</returns>
         private string SaveImage(HttpPostedFileBase file)
         {
-            if (file != null && (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png")))
+            if (file != null && (file.FileName.EndsWith(".jpg",true,null) || file.FileName.EndsWith(".png",true,null)))
             {
                 // save avatar
                 string filename = Guid.NewGuid() + file.FileName;
@@ -472,6 +473,7 @@
                     this.log.Warn(e, "Could not save profile picture with path: {0}", pathfile);
                 }
             }
+            else this.log.Warn("photo incorrect: {0}", file.FileName);
 
             return "~/images/default_user_profile.jpg";
         }

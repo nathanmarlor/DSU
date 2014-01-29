@@ -1,6 +1,6 @@
-﻿sr
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dealstealunreal.com", "src\dealstealunreal.com\dealstealunreal.com.csproj", "{BAE3F99C-F183-430A-A40D-4EBBF66F8DCA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dealstealunreal.com.Tests", "src\dealstealunreal.com.Tests\dealstealunreal.com.Tests.csproj", "{02C828A7-7789-424B-8ECC-0A8562B6C8AE}"

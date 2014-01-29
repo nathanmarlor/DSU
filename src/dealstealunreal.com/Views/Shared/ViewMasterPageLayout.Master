@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -106,7 +106,8 @@
 	        <% Html.RenderAction("ShowTopFive","Deal"); %>
 
 	        <div class="clear"></div>
-        </div><!-- END #main -->
+        </div>
+<!— END #main -->
 
         <div class="mask" id="page-mask" style="display:none;"></div>
     </div>
@@ -117,4 +118,5 @@
 
 
 </div>
+
 </html>

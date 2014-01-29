@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<List<dealstealunreal.com.Models.Deals.Deal>>" %>
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<List<dealstealunreal.com.Models.Deals.Deal>>" %>
 
 <div id="sidebar">
     <div id="top5">
@@ -13,7 +13,7 @@
                     </a>
                 </div>
                 <div class="top_deal_title">
-                    <a target="_blank" href="<%:deal.Url %>"><%:deal.Title %></a></div>
+                    <a target="_blank" href="<%:deal.Url %>"><%:deal.Title %>-<b>&pound<%: deal.Price %></b></a></div>
             </li>
             <% } %>
         </ul>

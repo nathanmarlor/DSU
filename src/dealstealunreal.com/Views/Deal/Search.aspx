@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/ViewMasterPageLayout.Master"
+<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/ViewMasterPageLayout.Master"
     Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Wrappers.DealList>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
@@ -35,7 +35,7 @@
                        { %>
                     <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.NegativeVote) %>
                     <%: Html.Hidden("dealId", deal.DealID) %>
-                    <input type="submit" class="no_deal" name="no_deal_x" />
+                    <input type="submit" class="no_deal" name="no_deal_x" value=""/>
                     <% } %>
                 </div>
                 <div class="pos_deal" onclick="window.open('<%: deal.Url %>')">
@@ -43,7 +43,7 @@
                        { %>
                     <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.PositiveVote) %>
                     <%: Html.Hidden("dealId", deal.DealID) %>
-                    <input type="submit" class="deal" name="deal_x" />
+                    <input type="submit" class="deal" name="deal_x" value=""/>
                     <% } %>
                 </div>
                 <% }
@@ -62,7 +62,7 @@
             </div>
             <h2 class="deal-title">
                 <a target="_blank" href="<%: deal.Url %>">
-                    <%: deal.Title %>- <b>£<%: deal.Price %></b> @
+                    <%: deal.Title %>- <b>&pound<%: deal.Price %></b> @
                     <%: deal.Retailer %></a></h2>
             <div id="frontpostmeta" class="post-meta">
                 <span class="post-author">by
@@ -140,6 +140,7 @@
         }
     </style>
     <script type="text/javascript" src="<%=Url.Content("~/js/validate.js") %>"></script>
+   <script type="text/javascript" src="//s.skimresources.com/js/62369X1402556.skimlinks.js"></script>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="BodyClass" runat="server">
     page page-id-405 page-template page-template-searchpage-php logged-in admin-bar

@@ -262,7 +262,7 @@
 
             cookie.Value = FormsAuthentication.Encrypt(newTicket);
 
-            HttpContext.Current.Response.Cookies.Add(cookie);
+            HttpContext.Current.Response.Cookies.Add(cookie); 
 
             HttpContext.Current.Session["sessionId"] = session.SessionId;
 

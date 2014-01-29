@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Wrappers.DealComments>" %>
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Wrappers.DealComments>" %>
 
 <div id="comment<%:Model.Deal.DealID %>" class="deal_comments white_content" style="display: none;">
     <a style="float: right; text-decoration: none; color: #000;" onclick="closeBoxId('comment<%:Model.Deal.DealID%>')"
@@ -13,9 +13,7 @@
                             <tr>
                                 <td class="comment-avatar">
                                     <div style="position: relative;">
-                                        <img width="30" height="30" class="avatar avatar-30 photo" src="<%:comment.Key.ProfilePicture %>"
-                                            alt="">
-                                            <%:Html.GravatarImage(comment.Key.Email, new Dictionary<string, string> { { "width", "30" }, { "height", "30" }, { "class", "avatar avatar-30 photo" } }, 30, GravatarHtmlHelper.DefaultImage.Default, Request.Url.Authority + Url.Content(comment.Key.ProfilePicture))%>
+                                        <%:Html.GravatarImage(comment.Key.Email, new Dictionary<string, string> { { "width", "30" }, { "height", "30" }, { "class", "avatar avatar-30 photo" } }, 30, GravatarHtmlHelper.DefaultImage.Default, Request.Url.Authority + Url.Content(comment.Key.ProfilePicture))%>
                                         <span class="comment-avatar-overlay"></span>
                                     </div>
                                 </td>
@@ -23,7 +21,6 @@
                                 <td class="comment-main">
                                     <div class="comment-meta">
                                         <span class="comment-author"><%:Html.ActionLink(comment.Key.UserName, "ShowProfile", new { Controller="Account",UserID=comment.Key.UserName })%></span>
-                                    </div>
                                     <!-- END .comment-meta -->
                                     <div class="comment-content">
                                         <p>
@@ -109,5 +106,8 @@
         </div>
         <!-- #respond -->
     </div>
+       
     <% } %>
+   <script type="text/javascript" src="//s.skimresources.com/js/62369X1402556.skimlinks.js"></script>
+
 </div>

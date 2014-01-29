@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/ViewMasterPageLayout.Master"  Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.LogOn>"%>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/ViewMasterPageLayout.Master"  Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.LogOn>"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     Login | DEAL.STEAL.UNREAL.
@@ -47,11 +47,11 @@
 							    <strong><%: Html.ActionLink("Lost password?", "RecoverPassword", "Account")%></strong>
 						    </p>		<% } %><!-- .sign-in -->
 			    <div class="social_connect_ui">
-					    <div style="margin-bottom: 3px;"><label>Connect with:</label></div>
+	
 				    <div title="Social Connect">
 				        						<% using (Html.BeginForm("FacebookLogin","Account",FormMethod.Post,new {Class="sign-in"})) { %>
 
-				        						    <input name="submitFacebook" class="submit button" type="image" src="../images/facebook-login-button.png"/>
+				        						    <input type="submit" name="submitFacebook" class="submitbutton" value=""/>
  
                                                         <% } %>
 					

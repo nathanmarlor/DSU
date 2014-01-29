@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Wrappers.OrderedDeals>" %>
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Wrappers.OrderedDeals>" %>
+
 
 <% foreach (var deal in Model.Deals)
    { %>
@@ -16,17 +17,20 @@
                { %>
             <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.NegativeVote)%>
             <%: Html.Hidden("dealId", deal.DealID)%>
-            <input type="submit" class="no_deal" name="no_deal_x" />
+            <input type="submit" class="no_deal" name="no_deal_x" value=""/>
             <% } %>
         </div>
-        <div class="pos_deal" onclick="window.open('<%: deal.Url %>')">
+        <div class="pos_deal" onclick="window.open('<%: deal.Url %>')">  
             <% using (Html.BeginForm("Voting", "Deal", FormMethod.Post))
                { %>
             <%: Html.Hidden("vote", dealstealunreal.com.Models.Vote.PositiveVote)%>
             <%: Html.Hidden("dealId", deal.DealID)%>
-            <input type="submit" class="deal" name="deal_x" />
-            <% } %>
+            <input type="submit" class="deal" name="deal_x" value=""/>
+       <% } %>
         </div>
+
+
+
         <% }
            else
            {
@@ -45,7 +49,7 @@
     </div>
     <% } %>
     <h2 class="deal-title">
-        <a target="_blank" href="<%: deal.Url %>"><%: deal.Title %>- <b>£<%: deal.Price %></b>@ <%: deal.Retailer %></a>
+        <a target="_blank" href="<%: deal.Url %>"><%: deal.Title %>-<b>&pound<%: deal.Price %></b>@ <%: deal.Retailer %></a>
     </h2>
     <div id="frontpostmeta" class="post-meta">
         <span class="post-author">by <%: Html.ActionLink(deal.UserName, "ShowProfile", new { Controller="Account", UserID=deal.UserName })%> </span>
@@ -90,7 +94,7 @@
         </div>
         <div class="maintitebar">
             <div class="nodeal_bar bar">
-                THIS IS...</div>
+            </div>
             <div class="deal_bar bar">
             </div>
             <div class="steal_bar bar">
@@ -106,4 +110,9 @@
     <div class="clear">
     </div>
 </div>
+   <script type="text/javascript" src="//s.skimresources.com/js/62369X1402556.skimlinks.js"></script>
 <% } %>
+
+
+
+

@@ -1,9 +1,9 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Deals.Deal>" %>
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dealstealunreal.com.Models.Deals.Deal>" %>
 
 <div style="float: left; left: -50px; position: fixed; top: 173px; z-index: 10;">
     <!--<span style="font-family: 'Abel',sans-serif;float: left;font-family: 'Abel',sans-serif; left: 17px;position: relative;">Login to submit your Deal</span><br>-->
-    <a style="display: block; box-shadow: none; width: 216px; height: 60px; cursor: pointer;
-        float: right; margin: 20px;" onclick="openBox()" title="Submit Deal" href="javascript:void(0);"
+    <a style="display: block; box-shadow: none; width: 220px; height: 45px; cursor: pointer;
+            float: right; margin: 20px;"onclick="openBox()" title="Submit Deal" href="javascript:void(0);"
         id="submit-deal"></a>
 </div>
 <div id="underlay">
@@ -67,7 +67,7 @@
             </tr>
             <tr>
                 <td>
-                    Price (£):<span class="asterisk">*</span>
+                    Price (&pound):<span class="asterisk">*</span>
                 </td>
                 <td>
                     <%: Html.TextBoxFor(m => m.Price, new { Class = "inputstyle", id = "deal_price" })%>
